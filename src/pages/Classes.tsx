@@ -125,10 +125,19 @@ const Classes = () => {
                 className="bg-white/80 backdrop-blur-md border border-gray-200/50 rounded-2xl p-8 animate-fade-in shadow-lg"
                 style={{ animationDelay: `${studioIndex * 0.3}s` }}
               >
-                <h2 className="text-4xl md:text-5xl font-serif font-light text-gray-800 mb-6">
-                  {studio.name}
-                </h2>
-                <div className="w-24 h-1 bg-gradient-to-r from-[#BC5E6F] to-[#6EA995] mx-0 mb-6"></div>
+                <div className="flex items-center gap-4 mb-6">
+                  {studioIndex === 0 ? (
+                    <div className="flex flex-col items-center w-full">
+                      <img src={"/src/assets/moov-studio.png"} alt="MOOV Dance Studio" className="h-12 w-auto mb-2" />
+                      <div className="w-24 h-1 bg-gradient-to-r from-[#BC5E6F] to-[#6EA995] mb-6"></div>
+                    </div>
+                  ) : (
+                    <div className="w-full flex flex-col items-center">
+                      <h2 className="text-4xl md:text-5xl font-serif font-light text-gray-800 mb-2">{studio.name}</h2>
+                      <div className="w-24 h-1 bg-gradient-to-r from-[#BC5E6F] to-[#6EA995] mb-6"></div>
+                    </div>
+                  )}
+                </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <div className="flex items-center gap-3 text-gray-600">

@@ -1,6 +1,6 @@
 // Import show images
 import lasOrquestasImg from "@/assets/shows/las-orquestas.jpg";
-import detrasDeMiImg from "@/assets/shows/detras-de-mi.jpg";
+import detrasDeMiImg from "@/assets/shows/detras-de-mi.jpeg";
 import rebozoImg from "@/assets/shows/rebozo.jpg";
 import damaPuertoImg from "@/assets/shows/dama-del-puerto.jpg";
 import mordisquitoImg from "@/assets/shows/mordisquito.jpg";
