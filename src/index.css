@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Minimalist & Sensual Design System - Valeria Vega Solórzano
+Inspired by dance movement, sensuality and minimalism
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Minimalist base palette */
+    --background: 0 0% 3%;
+    --foreground: 30 15% 92%;
+
+    /* Surface colors */
+    --card: 0 0% 10%;
+    --card-foreground: 30 15% 92%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 30 15% 92%;
+
+    /* Primary - warm nude/beige for sensuality */
+    --primary: 25 35% 75%;
+    --primary-foreground: 0 0% 15%;
+
+    /* Secondary - deep brown for contrast */
+    --secondary: 15 25% 20%;
+    --secondary-foreground: 30 15% 92%;
+
+    /* Muted tones */
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+
+    /* Accent - soft coral/rose for sensual touches */
+    --accent: 15 50% 70%;
+    --accent-foreground: 0 0% 15%;
+
+    /* Cultural - golden bronze for highlights */
+    --cultural: 35 60% 65%;
+    --cultural-foreground: 0 0% 15%;
+
+    /* Tango - deep burgundy for passion */
+    --tango: 345 75% 35%;
+    --tango-foreground: 30 15% 92%;
+    
+    /* Warm colorful palette based on user specifications */
+    --warm-green: 158 50% 55%;         /* #6EA995 - Teal green */
+    --warm-forest: 158 42% 36%;        /* #3E977D - Forest green */
+    --warm-gold: 53 83% 40%;           /* #B1A61A - Golden yellow */
+    --warm-rose: 350 40% 55%;          /* #BC5E6F - Rose pink */
+    
+    /* Dance-specific vivid colors using warm palette */
+    --tango-vivid: 350 40% 55%;        /* Warm rose for tango */
+    --ballet-vivid: 300 50% 65%;       /* Soft purple-pink */
+    --contemporary-vivid: 158 50% 55%; /* Warm teal green */
+    --musical-vivid: 53 83% 40%;       /* Golden yellow */
+    
+    /* Additional warm accent colors */
+    --tango-accent: 350 45% 60%;       /* Lighter warm rose */
+    --ballet-accent: 320 50% 70%;      /* Soft pink */
+    --contemporary-accent: 158 55% 60%; /* Brighter teal */
+    --musical-accent: 53 85% 45%;      /* Brighter gold */
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 25 35% 75%;
+
+    --radius: 0.5rem;
+    
+    /* Minimalist transitions */
+    --transition-minimal: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Soft shadows for minimalism */
+    --shadow-minimal: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
+    --shadow-soft: 0 2px 10px -2px hsl(0 0% 0% / 0.2);
+    --shadow-sensual: 0 8px 30px -8px hsl(25 35% 75% / 0.2);
+    
+    /* Gradients for sensuality */
+    --gradient-sensual: linear-gradient(135deg, hsl(25 35% 75% / 0.1), hsl(15 50% 70% / 0.1));
+    --gradient-minimal: linear-gradient(180deg, hsl(0 0% 7%), hsl(0 0% 12%));
+    --gradient-passion: linear-gradient(135deg, hsl(345 75% 35% / 0.2), hsl(0 0% 7%));
+    
+    /* Dance gradients - Warm and colorful */
+    --gradient-tango: linear-gradient(135deg, hsl(350 40% 55%), hsl(350 45% 60%));
+    --gradient-ballet: linear-gradient(135deg, hsl(300 50% 65%), hsl(320 50% 70%));
+    --gradient-contemporary: linear-gradient(135deg, hsl(158 50% 55%), hsl(158 55% 60%));
+    --gradient-musical: linear-gradient(135deg, hsl(53 83% 40%), hsl(53 85% 45%));
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
