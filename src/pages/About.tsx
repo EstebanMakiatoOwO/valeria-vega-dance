@@ -24,7 +24,8 @@ const About = () => {
               <img
                 src={acerca_de}
                 alt="Valeria Vega Solórzano"
-                className="w-full h-[700px] object-cover rounded-sm group-hover:shadow-minimal"
+                className="w-full object-cover rounded-sm group-hover:shadow-minimal
+             h-[55vh] md:h-[65vh] lg:h-[720px]"
               />
               <div className="absolute inset-0 rounded-sm"></div>
             </div>
@@ -42,7 +43,14 @@ const About = () => {
                 Teatro y Artes Escénicas por UNIR y una Licenciatura en Danza
                 por la UDG.
               </p>
-
+              {/* iO Tango Logo */}
+              <div className="rounded-sm overflow-hidden">
+                <img
+                  src={iotango}
+                  alt="iO Tango"
+                  className="w-full object-contain h-28"
+                />
+              </div>
               <p className="text-foreground/80 font-light leading-relaxed mb-8 text-lg">
                 Desde 2006, dirige su sello iO Artes Escénicas, con el que ha
                 producido 14 espectáculos. Con una carrera en teatro Musical,
@@ -81,20 +89,6 @@ const About = () => {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* iO Tango Logo */}
-            <div className="rounded-sm overflow-hidden">
-              <img
-                src={iotango}
-                alt="iO Tango"
-                className="w-full object-contain h-28"
-              />
-              <p className="text-accent/70 font-light mb-4">Desde 2006</p>
-              <p className="text-foreground/70 font-light leading-relaxed">
-                Sello fundado por Valeria que utiliza el lenguaje teatral y
-                dancístico para crear espectáculos únicos.
-              </p>
             </div>
           </div>
         </div>
