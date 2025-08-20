@@ -113,19 +113,19 @@ const Shows = () => {
   return (
     <div className="min-h-screen bg-black relative pt-20">
       {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-purple-500/10 to-cyan-500/10 animate-pulse"></div>
-      <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/5 via-violet-500/5 to-emerald-500/5"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-purple-500/10 to-cyan-500/10 animate-pulse" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/5 via-violet-500/5 to-emerald-500/5" />
 
       <div className="relative max-w-6xl mx-auto px-6 lg:px-8 py-16 z-10">
         {/* Header */}
         <div className="text-center mb-16 animate-slide-up">
-          <h1 className="text-5xl md:text-7xl font-serif font-light  text-primary mb-8">
+          <h1 className="font-serif tracking-tight text-5xl md:text-7xl font-light text-white mb-6">
             Espectáculos
           </h1>
-          <div className="w-24 h-px bg-cultural mx-auto opacity-60 mb-6"></div>
-          <p className="text-xl text-gray-300 font-light max-w-3xl mx-auto leading-relaxed">
+          <div className="w-24 h-px bg-cultural mx-auto opacity-60 mb-6" />
+          <p className="font-sans text-[17px] leading-relaxed text-gray-300 max-w-3xl mx-auto">
             Un recorrido por las producciones de iO Artes Escénicas que han
-            cautivado audiencias en México y el extranjero
+            cautivado audiencias en México y el extranjero.
           </p>
         </div>
 
@@ -133,51 +133,53 @@ const Shows = () => {
         <div className="mb-20 animate-fade-in">
           <div className="bg-card/50 backdrop-blur-sm p-8 rounded-sm border border-border/30">
             <div className="flex flex-col items-center">
-              <img
-                src={iotango}
-                alt="iO Tango"
-                className="w-full object-contain h-28"
-              />
-              <div className="w-28 h-1 bg-gradient-to-r from-[#D2B8A6] to-[#402D27] mb-6"></div>
+              <img src={iotango} alt="iO Tango" className="h-24 w-auto mb-4" />
+              <h2 className="font-serif tracking-tight text-3xl md:text-4xl font-light text-white mb-2">
+                iO Artes Escénicas
+              </h2>
+              <div className="w-28 h-1 bg-gradient-to-r from-[#D2B8A6] to-[#402D27] mb-6" />
             </div>
 
-            <p className="text-lg text-gray-200 font-light leading-relaxed mb-6">
-              Sello fundado en 2006 por Valeria Vega Solórzano que utiliza el
-              lenguaje teatral y dancístico para crear espectáculos que cuentan
-              historias y transportan al espectador al encuentro con sus
-              pasiones desde una concepción e interpretación propias.
-            </p>
+            <div className="space-y-6">
+              <p className="font-sans text-[17px] leading-relaxed text-gray-200">
+                Sello fundado en 2006 por Valeria Vega Solórzano que utiliza el
+                lenguaje teatral y dancístico para crear espectáculos que
+                cuentan historias y transportan al espectador al encuentro con
+                sus pasiones desde una concepción e interpretación propias.
+              </p>
 
-            <p className="text-gray-300 font-light leading-relaxed mb-6">
-              Reúne de manera independiente y por proyecto a distintos
-              creadores: bailarines, músicos, iluminadores, escenógrafos,
-              compositores, directores, dramaturgos, coreógrafos y diseñadores
-              de vestuario como: Martha Benitez +, Libertad Mardel, Jésica
-              Elizondo, Tenzing Ortega + Erika Suárez, Hasam Díaz Fierro, Erika
-              Méndez, Cesar "Chacho" Guerra, Francisco de León, Eduardo Ruiz
-              Saviñon, Luis Escárcega, Elisa Rodríguez, Horacio Rosso, Jacob
-              Morales, entre muchos otros artistas y diseñadores.
-            </p>
+              <p className="font-sans text-[17px] leading-relaxed text-gray-300">
+                Reúne de manera independiente y por proyecto a distintos
+                creadores: bailarines, músicos, iluminadores, escenógrafos,
+                compositores, directores, dramaturgos, coreógrafos y diseñadores
+                de vestuario como: Martha Benitez, Libertad Mardel, Jésica
+                Elizondo, Tenzing Ortega + Erika Suárez, Hasam Díaz Fierro,
+                Erika Méndez, Cesar "Chacho" Guerra, Francisco de León, Eduardo
+                Ruiz Saviñon, Luis Escárcega, Elisa Rodríguez, Horacio Rosso,
+                Jacob Morales, entre muchos otros artistas y diseñadores.
+              </p>
 
-            <p className="text-gray-300 font-light leading-relaxed">
-              A la fecha ha realizado 14 puestas en escena destacando "Malena
-              baila el tango" (Foro de las Artes, CENART), iO Tango (Festival
-              internacional de música de Morelia) "Detrás de mí, de mujeres y
-              tangos" (Foro de las Artes, CENART y Teatro de la Danza, INBA,
-              C.C. Helénico) "Mi tango", "Manon, un último tango", "Los colores
-              del tango"( Los Talleres de Coyoacán), "La dama del puerto"
-              (Circuito Nacional de Artes Escénicas en espacios independientes),
-              "Las notas del tango" (Un Teatro), "Mordisquito" (Casa del Lago
-              UNAM), "Rebozo" (PECDA 2024).
-            </p>
+              <p className="font-sans text-[17px] leading-relaxed text-gray-300">
+                A la fecha ha realizado 14 puestas en escena destacando "Malena
+                baila el tango" (Foro de las Artes, CENART), iO Tango (Festival
+                internacional de música de Morelia) "Detrás de mí, de mujeres y
+                tangos" (Foro de las Artes, CENART y Teatro de la Danza, INBA,
+                C.C. Helénico) "Mi tango", "Manon, un último tango", "Los
+                colores del tango" (Los Talleres de Coyoacán), "La dama del
+                puerto" (Circuito Nacional de Artes Escénicas en espacios
+                independientes), "Las notas del tango" (Un Teatro),
+                "Mordisquito" (Casa del Lago UNAM), "Rebozo" (PECDA 2024).
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Shows timeline */}
         <div>
-          <h3 className="text-3xl font-serif font-light text-white mb-12 text-center">
+          <h3 className="font-serif tracking-tight text-3xl md:text-4xl font-light text-white mb-12 text-center">
             Cronología de Espectáculos
           </h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {shows.map((show, index) => (
               <div
@@ -185,16 +187,6 @@ const Shows = () => {
                 className="group relative overflow-hidden bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl hover:shadow-2xl transition-all duration-500 animate-fade-in hover:scale-[1.02]"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {/* Gradient overlay */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-r ${show.gradient} opacity-0 group-hover:opacity-30 transition-opacity duration-500`}
-                ></div>
-
-                {/* Glow effect */}
-                <div
-                  className={`absolute -inset-1 bg-gradient-to-r ${show.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
-                ></div>
-
                 {/* Show image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -204,40 +196,33 @@ const Shows = () => {
                   />
                   <div
                     className={`absolute inset-0 bg-gradient-to-t ${show.gradient} opacity-60 group-hover:opacity-40 transition-opacity duration-500`}
-                  ></div>
+                  />
 
-                  {/* Year badge overlay */}
+                  {/* Year badge */}
                   <div className="absolute top-4 left-4">
-                    <span
-                      className={`inline-block px-4 py-2 bg-gradient-to-r ${show.gradient} text-white text-lg font-light rounded-lg shadow-lg backdrop-blur-sm`}
-                    >
+                    <span className="inline-block px-3 py-1 bg-white/10 text-white text-sm font-medium tracking-wide rounded-md border border-white/20 backdrop-blur-sm">
                       {show.year}
                     </span>
                   </div>
                 </div>
 
+                {/* Card content */}
                 <div className="relative p-6 space-y-4">
-                  {/* Decorative line */}
+                  {/* Decorative gradient line */}
                   <div
                     className={`w-16 h-1 bg-gradient-to-r ${show.gradient} group-hover:w-24 transition-all duration-500 rounded-full`}
-                  ></div>
+                  />
 
-                  {/* Title */}
-                  <h4
-                    className="text-lg font-serif font-light text-white leading-relaxed group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text transition-all duration-300"
-                    style={{
-                      backgroundImage: `linear-gradient(to right, ${show.gradient
-                        .replace("from-", "")
-                        .replace("via-", "")
-                        .replace("to-", "")
-                        .split(" ")
-                        .map((c) => `var(--${c})`)
-                        .join(", ")})`,
-                    }}
-                  >
+                  {/* Title (serif, sin gradiente) */}
+                  <h4 className="font-serif tracking-tight text-xl md:text-2xl font-normal text-white leading-snug">
                     {show.title}
                   </h4>
                 </div>
+
+                {/* Outer glow on hover */}
+                <div
+                  className={`pointer-events-none absolute -inset-1 bg-gradient-to-r ${show.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+                />
               </div>
             ))}
           </div>
