@@ -6,7 +6,15 @@ const About = () => {
     <div className="min-h-screen bg-background pt-20">
       <div className="max-w-6xl mx-auto px-6 lg:px-8 py-16">
         {/* Header */}
-        <div className="text-center mb-20 animate-slide-up">
+        <div
+          className="text-center mb-20 animate-slide-up motion-reduce:animate-none"
+          style={{
+            animationDuration: "400ms",
+            animationTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
+            animationDelay: "80ms",
+            willChange: "transform, opacity",
+          }}
+        >
           <h1 className="text-5xl md:text-7xl font-serif font-light text-primary mb-8">
             Acerca de
           </h1>
@@ -17,15 +25,23 @@ const About = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 items-start">
           {/* Image section */}
           <div
-            className="animate-fade-in lg:col-span-3"
-            style={{ animationDelay: "0.2s" }}
+            className="animate-fade-in lg:col-span-3 motion-reduce:animate-none"
+            style={{
+              animationDelay: "120ms", // antes: 0.2s
+              animationDuration: "400ms",
+              animationTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
+              willChange: "transform, opacity",
+            }}
           >
             <div className="relative group">
               <img
                 src={acerca_de}
                 alt="Valeria Vega Solórzano"
-                className="w-full object-cover rounded-sm group-hover:shadow-minimal
-             h-[55vh] md:h-[65vh] lg:h-[720px]"
+                className="w-full object-cover rounded-sm h-[55vh] md:h-[65vh] lg:h-[720px]"
+                loading="eager" // prioriza la hero
+                decoding="async"
+                width={1280} // pon aproximado del asset
+                height={720}
               />
               <div className="absolute inset-0 rounded-sm"></div>
             </div>
@@ -33,8 +49,13 @@ const About = () => {
 
           {/* Text content */}
           <div
-            className="space-y-8 animate-fade-in lg:col-span-2"
-            style={{ animationDelay: "0.4s" }}
+            className="space-y-8 animate-fade-in lg:col-span-2 motion-reduce:animate-none"
+            style={{
+              animationDelay: "180ms", // antes: 0.4s (demasiado)
+              animationDuration: "400ms",
+              animationTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
+              willChange: "transform, opacity",
+            }}
           >
             <div className="prose prose-lg max-w-none">
               <p className="text-foreground/80 font-light leading-relaxed mb-8 text-lg">
@@ -49,6 +70,10 @@ const About = () => {
                   src={iotango}
                   alt="iO Tango"
                   className="w-full object-contain h-28"
+                  loading="lazy"
+                  decoding="async"
+                  width={640}
+                  height={112}
                 />
               </div>
               <p className="text-foreground/80 font-light leading-relaxed mb-8 text-lg">
@@ -79,8 +104,14 @@ const About = () => {
                 ].map((achievement, index) => (
                   <div
                     key={achievement}
-                    className="flex items-center space-x-4 animate-slide-up"
-                    style={{ animationDelay: `${0.6 + index * 0.1}s` }}
+                    className="flex items-center space-x-4 animate-slide-up motion-reduce:animate-none"
+                    style={{
+                      // antes: base 0.6 + 0.1s → se sentía lento
+                      animationDelay: `${220 + index * 50}ms`,
+                      animationDuration: "400ms",
+                      animationTimingFunction: "cubic-bezier(0.22,1,0.36,1)",
+                      willChange: "transform, opacity",
+                    }}
                   >
                     <div className="w-1 h-1 bg-cultural rounded-full"></div>
                     <span className="text-foreground/70 font-light">

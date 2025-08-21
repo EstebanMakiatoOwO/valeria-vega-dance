@@ -1,7 +1,7 @@
 // Import dance class images
 import tangoImage from "../assets/tango-class.jpg";
 import musicalImage from "../assets/musical-theater-class.jpg";
-import contemporaryImage from "../assets/contemporary-class.jpg";
+import moovLogo from "../assets/moov-studio.png";
 import balletImage from "../assets/ballet-class.jpg";
 import adultsImage from "../assets/adultos-class.jpg";
 import { MapPin, Phone, ExternalLink } from "lucide-react";
@@ -138,9 +138,9 @@ const Classes = () => {
                   {studioIndex === 0 ? (
                     <div className="flex flex-col items-center w-full">
                       <img
-                        src={"/src/assets/moov-studio.png"}
+                        src={moovLogo}
                         alt="MOOV Dance Studio"
-                        className="h-12 w-auto mb-2"
+                        className="h-14 md:h-16 lg:h-20 w-auto mb-2 object-contain"
                       />
                       <div className="w-24 h-1 bg-gradient-to-r from-[#BC5E6F] to-[#6EA995] mb-6"></div>
                     </div>
