@@ -2,8 +2,7 @@
 import tangoImage from "../assets/tango-class.jpg";
 import musicalImage from "../assets/musical-theater-class.jpg";
 import moovLogo from "../assets/moov-studio.png";
-import balletImage from "../assets/ballet-class.jpg";
-import adultsImage from "../assets/adultos-class.jpg";
+import cuerposPoster from "../assets/cuerpos-bilingues.png"; // Usar un poster de cuerpos bilingües
 import { MapPin, Phone, ExternalLink } from "lucide-react";
 
 const Classes = () => {
@@ -11,16 +10,16 @@ const Classes = () => {
     {
       name: "MOOV Dance Studio",
       address: "San Borja 1503, Vértiz Narvarte, Benito Juárez, CDMX",
+      maps: "https://maps.app.goo.gl/xCJt6YwRMFK1pfBY6", // Link de Google Maps
       whatsapp: "5529009002",
-      instagram: "@moovdancestudio",
-      website: null,
+      logo: moovLogo,
       classes: [
         {
           title: "Tango Argentino",
           level: "Principiantes",
           description:
             'El tango argentino es considerado el rey de los bailes de pareja. "El baile de un corazón y cuatro piernas", "El lenguaje del silencio". Una danza elegante, sobria, refinada que al bailarse en abrazo cerrado, conecta a la gente en un nivel profundo e intenso, mejora la comunicación, el autoestima, reduce el estrés y ansiedad, mejora la conciencia corporal y el equilibrio.',
-          schedule: "Martes y Jueves 20-21 hrs",
+          schedule: "Martes y Jueves 20-21 hrs\nSábados 10-12 hrs",
           image: tangoImage,
           gradient: "from-[#BC5E6F] to-[#D67084]",
           color: "[#BC5E6F]",
@@ -28,83 +27,57 @@ const Classes = () => {
           borderColor: "border-[#BC5E6F]/30",
         },
         {
-          title: "Bailes Latinos",
+          title: "Bailes Latinos y de Salón",
           level: "Principiantes",
           description:
             "El baile social de pareja, es una de las actividades que aporta más felicidad a la gente, ya que a través del contacto físico entre personas y el movimiento con la música, se mejora la salud física, emocional y cognitiva. En esta clase se aprenderán varios ritmos que podrán aplicarse a las fiestas (Merengue, salsa, cumbia, danzón, rock, swing). Una clase ágil y divertida para romper con la rutina de la semana y conocer gente.",
-          schedule: "Viernes 19-21 horas",
+          schedule: "Viernes 7-9 pm",
           image: musicalImage,
           gradient: "from-[#B1A61A] to-[#CEC235]",
           color: "[#B1A61A]",
           bgColor: "bg-gradient-to-br from-[#B1A61A]/20 to-[#CEC235]/30",
           borderColor: "border-[#B1A61A]/30",
         },
-        {
-          title: "Ballet Adultos",
-          level: "Principiantes",
-          description:
-            "El ballet clásico ha dejado de ser una disciplina exclusiva de jóvenes e infantes para ser una forma de arte terapéutica y con múltiples beneficios físicos, mentales y emocionales entre adultos. El ballet nos permite desconectar de las tensiones diarias a través de la conexión entre música y movimiento, trabaja todos los grupos musculares, la flexibilidad, la postura y la fuerza.",
-          schedule: "Lunes y miércoles 9-10:30 am",
-          image: balletImage,
-          gradient: "from-[#6EA995] to-[#7BB5A2]",
-          color: "[#6EA995]",
-          bgColor: "bg-gradient-to-br from-[#6EA995]/20 to-[#7BB5A2]/30",
-          borderColor: "border-[#6EA995]/30",
-        },
-        {
-          title: "Baile para Adultos Mayores",
-          level: "Principiantes",
-          description:
-            "El baile es una actividad que puede ser practicada a cualquier edad, brinda felicidad y añade calidad de vida física, mental, emocional y social. Mantiene las articulaciones sanas, fomenta la escucha, la coordinación y memoria. En esta clase los abuelitos podrán sentirse bienvenidos y ser parte de una comunidad donde no hay discriminación alguna por edad o condición física.",
-          schedule: "Lunes y miércoles 11-12",
-          image: adultsImage,
-          gradient: "from-[#3E977D] to-[#4AA68B]",
-          color: "[#3E977D]",
-          bgColor: "bg-gradient-to-br from-[#3E977D]/20 to-[#4AA68B]/30",
-          borderColor: "border-[#3E977D]/30",
-        },
       ],
     },
     {
-      name: "Dancing Queer",
-      address:
-        "Monterrey 241-3er. piso, Roma Sur, Cuauhtémoc, Ciudad de México, CDMX",
-      whatsapp: "55 4885 1059",
-      instagram: "@dancingqueermx",
-      website: "www.dancingqueer.mx",
-      classes: [
-        {
-          title: "Tango Queer",
-          level: "Principiantes",
-          description:
-            "El tango Queer es una corriente de la danza tango donde los roles de género y mando líder-seguidor son flexibles y fuera de estereotipos, lo que brinda libertad y seguridad a la gente que gusta bailar con gente del mismo sexo o que decide asumir un rol distinto en la danza. Esta clase es también muy formativa para personas que tienen la inquietud de la docencia.",
-          schedule: "Sábados 12-2 pm",
-          image: tangoImage,
-          gradient: "from-[#BC5E6F] to-[#D67084]",
-          color: "[#BC5E6F]",
-          bgColor: "bg-gradient-to-br from-[#BC5E6F]/25 to-[#D67084]/35",
-          borderColor: "border-[#BC5E6F]/40",
-        },
-      ],
-    },
-    {
-      name: "El abrazo de México",
-      address: "Rio Tiber 91, 2o piso, Cuauhtémoc, CDMX",
-      whatsapp: null,
-      instagram: null,
-      website: "https://cuddly-structure-473471.framer.app/",
+      name: "Cuerpos Bilingües",
+      whatsapp: "5529009002",
+      logo: null,
+      link: "https://cuddly-structure-473471.framer.app/", // Link externo actualizado
       classes: [
         {
           title: "Cuerpos Bilingües",
           level: "Todos los niveles",
           description:
             "Una iniciativa pedagógica intercultural de aprendizaje de idiomas a través del movimiento del Tango. El cuerpo, la danza, más allá de las palabras. Dos personas que no se conocen, que no hablan el mismo idioma, y que tampoco saben bailar. Pero en algún momento, en medio del silencio, algo en su cuerpo empieza a entender.",
-          schedule: "Domingos 10, 17, 23 y 31 de Agosto 2025 - 1:30-4 pm",
-          image: tangoImage,
+          schedule: null,
+          image: cuerposPoster,
           gradient: "from-[#B1A61A] to-[#CEC235]",
           color: "[#B1A61A]",
           bgColor: "bg-gradient-to-br from-[#B1A61A]/25 to-[#CEC235]/35",
           borderColor: "border-[#B1A61A]/40",
+        },
+      ],
+    },
+    {
+      name: "Grupo coreográfico de Tango Escénico",
+      address: "Gobernador Melchor Musquiz 38, San Miguel Chapultepec, CDMX",
+      maps: "https://maps.app.goo.gl/D79x8yFaELiTH61J9", // Link de Google Maps actualizado
+      whatsapp: "5529009002",
+      logo: null,
+      classes: [
+        {
+          title: "Grupo coreográfico de Tango Escénico",
+          level: "Todos los niveles",
+          description:
+            "Grupo coreográfico para aprender y montar piezas de tango escénico. Ideal para quienes buscan presentarse en escenarios y festivales.\n\nLugar: Famma\nDirección: Gobernador Melchor Musquiz 38, San Miguel Chapultepec.",
+          schedule: "Sábados 16-18 hrs",
+          image: tangoImage,
+          gradient: "from-[#6EA995] to-[#7BB5A2]",
+          color: "[#6EA995]",
+          bgColor: "bg-gradient-to-br from-[#6EA995]/20 to-[#7BB5A2]/30",
+          borderColor: "border-[#6EA995]/30",
         },
       ],
     },
@@ -119,10 +92,6 @@ const Classes = () => {
             Clases
           </h1>
           <div className="w-24 h-px bg-gradient-to-r from-[#BC5E6F] via-[#6EA995] to-[#B1A61A] mx-auto mb-8"></div>
-          <p className="text-xl text-gray-600 font-light max-w-3xl mx-auto leading-relaxed">
-            Descubre tu potencial artístico a través de nuestras clases
-            especializadas en danza y artes escénicas
-          </p>
         </div>
 
         {/* Studios and Classes */}
@@ -135,11 +104,11 @@ const Classes = () => {
                 style={{ animationDelay: `${studioIndex * 0.3}s` }}
               >
                 <div className="flex items-center gap-4 mb-6">
-                  {studioIndex === 0 ? (
+                  {studio.logo ? (
                     <div className="flex flex-col items-center w-full">
                       <img
-                        src={moovLogo}
-                        alt="MOOV Dance Studio"
+                        src={studio.logo}
+                        alt={studio.name}
                         className="h-14 md:h-16 lg:h-20 w-auto mb-2 object-contain"
                       />
                       <div className="w-24 h-1 bg-gradient-to-r from-[#BC5E6F] to-[#6EA995] mb-6"></div>
@@ -155,37 +124,42 @@ const Classes = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="flex items-center gap-3 text-gray-600">
-                    <MapPin className="w-5 h-5 text-[#6EA995]" />
-                    <span className="font-light">{studio.address}</span>
-                  </div>
-
+                  {studio.address && (
+                    <div className="flex items-center gap-3 text-gray-600">
+                      <MapPin className="w-5 h-5 text-[#6EA995]" />
+                      <a
+                        href={studio.maps}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-light underline hover:text-[#6EA995]"
+                      >
+                        {studio.address}
+                      </a>
+                    </div>
+                  )}
                   {studio.whatsapp && (
                     <div className="flex items-center gap-3 text-gray-600">
                       <Phone className="w-5 h-5 text-[#B1A61A]" />
-                      <span className="font-light">
-                        WhatsApp: {studio.whatsapp}
-                      </span>
+                      <a
+                        href={`https://wa.me/${studio.whatsapp}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-light underline hover:text-[#B1A61A]"
+                      >
+                        Reserva al: {studio.whatsapp}
+                      </a>
                     </div>
                   )}
-
-                  {studio.instagram && (
-                    <div className="flex items-center gap-3 text-gray-600">
-                      <ExternalLink className="w-5 h-5 text-[#BC5E6F]" />
-                      <span className="font-light">{studio.instagram}</span>
-                    </div>
-                  )}
-
-                  {studio.website && (
+                  {studio.link && (
                     <div className="flex items-center gap-3 text-gray-600 md:col-span-2 lg:col-span-1">
                       <ExternalLink className="w-5 h-5 text-[#3E977D]" />
                       <a
-                        href={studio.website}
+                        href={studio.link}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-light hover:text-[#3E977D] transition-colors"
                       >
-                        {studio.website}
+                        Ir al curso
                       </a>
                     </div>
                   )}
@@ -224,15 +198,6 @@ const Classes = () => {
                           <div
                             className={`absolute inset-0 bg-gradient-to-r ${classItem.gradient} opacity-30 group-hover:opacity-50 transition-opacity duration-500`}
                           ></div>
-
-                          {/* Level badge on image */}
-                          <div className="absolute top-6 left-6">
-                            <span
-                              className={`px-4 py-2 bg-black/70 text-${classItem.color} text-sm font-light rounded-full border border-${classItem.color}/50 backdrop-blur-sm`}
-                            >
-                              {classItem.level}
-                            </span>
-                          </div>
                         </div>
 
                         {/* Content section */}
@@ -255,14 +220,74 @@ const Classes = () => {
                           </p>
 
                           {/* Schedule card */}
-                          <div className="bg-white/60 border border-gray-300/30 rounded-xl p-6 backdrop-blur-sm">
-                            <div className="text-gray-500 font-light text-sm mb-2">
-                              Horario
+                          {classItem.schedule && (
+                            <div className="bg-white/60 border border-gray-300/30 rounded-xl p-6 backdrop-blur-sm flex flex-col items-start">
+                              <div className="text-gray-500 font-light text-sm mb-2">Horario</div>
+                              <div className="text-gray-800 font-light text-lg whitespace-pre-line mb-4">{classItem.schedule}</div>
+                              {/* Info de contacto y links alineados en vertical, pegados a la izquierda y con logo MOOV */}
+                              <div className="flex flex-col items-start gap-3 mt-2 w-full">
+                                {studio.logo && (
+                                  <img
+                                    src={studio.logo}
+                                    alt="MOOV Logo"
+                                    className="h-16 w-auto drop-shado p-1 mb-2"
+                                  />
+                                )}
+                                {studio.address && (
+                                  <div className="flex items-center gap-2 text-gray-600">
+                                    <MapPin className="w-5 h-5 text-[#6EA995]" />
+                                    <a
+                                      href={studio.maps}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-light underline hover:text-[#6EA995]"
+                                    >
+                                      {studio.address}
+                                    </a>
+                                  </div>
+                                )}
+                                {studio.whatsapp && (
+                                  <div className="flex items-center gap-2 text-gray-600">
+                                    <Phone className="w-5 h-5 text-[#B1A61A]" />
+                                    <a
+                                      href={`https://wa.me/${studio.whatsapp}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-light underline hover:text-[#B1A61A]"
+                                    >
+                                      Reserva al: {studio.whatsapp}
+                                    </a>
+                                  </div>
+                                )}
+                                {studio.link && (
+                                  <div className="flex items-center gap-2 text-gray-600">
+                                    <ExternalLink className="w-5 h-5 text-[#3E977D]" />
+                                    <a
+                                      href={studio.link}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-light hover:text-[#3E977D] transition-colors"
+                                    >
+                                      Ir al curso
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <div className="text-gray-800 font-light text-lg">
-                              {classItem.schedule}
+                          )}
+                          {classItem.title === "Cuerpos Bilingües" && (
+                            <div className="flex items-center gap-2 text-gray-600 mt-2">
+                              <ExternalLink className="w-5 h-5 text-[#3E977D]" />
+                              <a
+                                href="https://cuddly-structure-473471.framer.app/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-light underline hover:text-[#3E977D] transition-colors"
+                              >
+                                Ir al curso
+                              </a>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     </div>
