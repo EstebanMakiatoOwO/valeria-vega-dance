@@ -9,9 +9,10 @@ const Navigation = () => {
   
   const navItems = [
     { name: 'Inicio', href: '/' },
-    { name: 'Acerca de', href: '/about' },
+    { name: 'Acerca&nbsp;de', href: '/about' },
     { name: 'Clases', href: '/classes' },
     { name: 'Espectáculos', href: '/shows' },
+    { name: 'Galería', href: '/gallery' },
     { name: 'Prensa', href: '/press' },
     { name: 'Contacto', href: '/contact' },
   ];
@@ -26,7 +27,7 @@ const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/30">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="relative flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="group">
@@ -38,11 +39,9 @@ const Navigation = () => {
             </Link>
           </div>
 
-          {/* Menu button */}
-          <div className="flex items-center gap-6">
-            {/* Navigation Links - visible only on xl */}
-            <div className="hidden xl:block flex-1 px-12">
-            <div className="flex items-center space-x-12">
+          {/* Center Navigation Links - visible only on xl */}
+          <div className="hidden xl:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="flex items-center justify-center space-x-8">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -53,7 +52,7 @@ const Navigation = () => {
                       : 'text-foreground/70 hover:text-accent'
                   }`}
                 >
-                  {item.name}
+                  <span dangerouslySetInnerHTML={{ __html: item.name }} />
                   <span className={`absolute bottom-0 left-0 h-px bg-accent transition-minimal ${
                     location.pathname === item.href 
                       ? 'w-full' 
@@ -64,6 +63,8 @@ const Navigation = () => {
             </div>
           </div>
 
+          {/* Right side: Social + Menu */}
+          <div className="flex items-center gap-6">
             {/* Social Media Icons - visible only on xl */}
             <div className="hidden xl:flex items-center space-x-6">
               {socialLinks.map((social) => (

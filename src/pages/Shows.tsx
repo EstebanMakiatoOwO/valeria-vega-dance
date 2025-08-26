@@ -1,20 +1,18 @@
 // Import show images
-import lasOrquestasImg from "@/assets/shows/las-orquestas.jpg";
+import lasOrquestasImg from "@/assets/shows/las-orquestas.jpeg";
 import detrasDeMiImg from "@/assets/shows/detras-de-mi.jpeg";
 import rebozoImg from "@/assets/shows/rebozo.jpg";
 import damaPuertoImg from "@/assets/shows/dama-del-puerto.jpg";
-import mordisquitoImg from "@/assets/shows/mordisquito.jpg";
 import suenoVeranoImg from "@/assets/shows/sueno-verano.jpg";
-import notasTangoImg from "@/assets/shows/notas-del-tango.jpg";
-import manonTangoImg from "@/assets/shows/manon-tango.jpg";
-import coloresTangoImg from "@/assets/shows/colores-del-tango.jpg";
-import miTangoImg from "@/assets/shows/mi-tango.jpg";
-import queQuilomboImg from "@/assets/shows/que-quilombo.jpg";
-import tangoOleoImg from "@/assets/shows/tango-oleo.jpg";
+import notasTangoImg from "@/assets/shows/notas-del-tango.jpeg";
+import manonTangoImg from "@/assets/shows/manon-tango.jpeg";
+import coloresTangoImg from "@/assets/shows/colores-del-tango.jpeg";
+import miTangoImg from "@/assets/shows/mi-tango.jpeg";
+import queQuilomboImg from "@/assets/shows/que-quilombo.jpeg";
+import tangoOleoImg from "@/assets/shows/tango-oleo.jpeg";
 import ioTangoImg from "@/assets/shows/io-tango.jpg";
 import juergaTangosImg from "@/assets/shows/juerga-tangos.jpg";
-import malenaBailaImg from "@/assets/shows/malena-baila.jpg";
-import iotango from "../assets/iotango.png";
+import malenaBailaImg from "@/assets/shows/malena-baila.jpeg";
 
 const Shows = () => {
   const shows = [
@@ -41,12 +39,6 @@ const Shows = () => {
       title: "LA DAMA DEL PUERTO",
       gradient: "from-amber-500 via-orange-500 to-red-500",
       image: damaPuertoImg,
-    },
-    {
-      year: "2027",
-      title: "MORDISQUITO",
-      gradient: "from-pink-500 via-rose-500 to-red-500",
-      image: mordisquitoImg,
     },
     {
       year: "2016",
@@ -118,31 +110,19 @@ const Shows = () => {
 
       <div className="relative max-w-6xl mx-auto px-6 lg:px-8 py-16 z-10">
         {/* Header */}
-        <div className="text-center mb-16 animate-slide-up">
+        <div className="text-right mb-16 animate-slide-up">
           <h1 className="font-serif tracking-tight text-5xl md:text-7xl font-light text-white mb-6">
             Espectáculos
           </h1>
-          <div className="w-24 h-px bg-cultural mx-auto opacity-60 mb-6" />
-          <p className="font-sans text-[17px] leading-relaxed text-gray-300 max-w-3xl mx-auto">
-            Un recorrido por las producciones de iO Artes Escénicas que han
-            cautivado audiencias en México y el extranjero.
-          </p>
+          <div className="w-24 h-px bg-cultural ml-auto mr-0 opacity-60 mb-6" />
         </div>
 
         {/* iO Artes Escénicas section */}
         <div className="mb-20 animate-fade-in">
           <div className="bg-card/50 backdrop-blur-sm p-8 rounded-sm border border-border/30">
-            <div className="flex flex-col items-center">
-              <img src={iotango} alt="iO Tango" className="h-24 w-auto mb-4" />
-              <h2 className="font-serif tracking-tight text-3xl md:text-4xl font-light text-white mb-2">
-                iO Artes Escénicas
-              </h2>
-              <div className="w-28 h-1 bg-gradient-to-r from-[#D2B8A6] to-[#402D27] mb-6" />
-            </div>
-
             <div className="space-y-6">
               <p className="font-sans text-[17px] leading-relaxed text-gray-200">
-                Sello fundado en 2006 por Valeria Vega Solórzano que utiliza el
+                Valeria Vega Solórzano funda con Mario Fratta en 2006 iO Artes Escénicas. Utiliza el 
                 lenguaje teatral y dancístico para crear espectáculos que
                 cuentan historias y transportan al espectador al encuentro con
                 sus pasiones desde una concepción e interpretación propias.
@@ -158,26 +138,14 @@ const Shows = () => {
                 Ruiz Saviñon, Luis Escárcega, Elisa Rodríguez, Horacio Rosso,
                 Jacob Morales, entre muchos otros artistas y diseñadores.
               </p>
-
-              <p className="font-sans text-[17px] leading-relaxed text-gray-300">
-                A la fecha ha realizado 14 puestas en escena destacando "Malena
-                baila el tango" (Foro de las Artes, CENART), iO Tango (Festival
-                internacional de música de Morelia) "Detrás de mí, de mujeres y
-                tangos" (Foro de las Artes, CENART y Teatro de la Danza, INBA,
-                C.C. Helénico) "Mi tango", "Manon, un último tango", "Los
-                colores del tango" (Los Talleres de Coyoacán), "La dama del
-                puerto" (Circuito Nacional de Artes Escénicas en espacios
-                independientes), "Las notas del tango" (Un Teatro),
-                "Mordisquito" (Casa del Lago UNAM), "Rebozo" (PECDA 2024).
-              </p>
             </div>
           </div>
         </div>
 
         {/* Shows timeline */}
         <div>
-          <h3 className="font-serif tracking-tight text-3xl md:text-4xl font-light text-white mb-12 text-center">
-            Cronología de Espectáculos
+          <h3 className="font-serif tracking-tight text-3xl md:text-4xl font-light text-white mb-12 text-right">
+            Producciones
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -188,14 +156,14 @@ const Shows = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Show image */}
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-96 overflow-hidden">
                   <img
                     src={show.image}
                     alt={show.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div
-                    className={`absolute inset-0 bg-gradient-to-t ${show.gradient} opacity-60 group-hover:opacity-40 transition-opacity duration-500`}
+                    className={`absolute inset-0 bg-gradient-to-t ${show.gradient} opacity-10 group-hover:opacity-0 transition-opacity duration-500`}
                   />
 
                   {/* Year badge */}

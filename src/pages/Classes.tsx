@@ -87,13 +87,13 @@ const Classes = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-200 via-white to-yellow-100 relative pt-20">
       <div className="relative max-w-5xl mx-auto px-6 lg:px-8 py-16 z-10">
         {/* Header */}
-        <div className="text-center mb-20 animate-slide-up">
-          <h1 className="text-5xl md:text-7xl font-serif font-light text-gray-800 mb-8">
+        <div className="text-right mb-16 animate-slide-up">
+          <h1 className="font-serif tracking-tight text-5xl md:text-7xl font-light text-gray-800 mb-6">
             Clases
           </h1>
-          <div className="w-24 h-px bg-gradient-to-r from-[#BC5E6F] via-[#6EA995] to-[#B1A61A] mx-auto mb-8"></div>
+          <div className="w-24 h-px bg-cultural ml-auto mr-0 opacity-60 mb-6"></div>
         </div>
-
+        
         {/* Studios and Classes */}
         <div className="space-y-16">
           {studios.map((studio, studioIndex) => (
