@@ -1,5 +1,11 @@
 import { Mail, Phone, Instagram, Facebook, Music } from 'lucide-react';
 
+// Import images
+import damaPuerto from "@/assets/shows/dama-del-puerto.jpg";
+import rebozo from "@/assets/shows/rebozo.jpg";
+import valeriaDancer from "@/assets/valeria-dancer.jpg";
+import tangoClass from "@/assets/tango-class.jpg";
+
 const Contact = () => {
   const contactInfo = [
     {
@@ -36,22 +42,22 @@ const Contact = () => {
 
   const images = [
     {
-      src: "/src/assets/shows/dama-del-puerto.jpg",
+      src: damaPuerto,
       alt: "La Dama del Puerto",
       className: "w-[260px] h-[390px] left-[5%] top-[5%] rotate-[-3deg]"
     },
     {
-      src: "/src/assets/shows/rebozo.jpg",
+      src: rebozo,
       alt: "Mi Tango",
       className: "w-[280px] h-[420px] left-[38%] top-[2%] rotate-[4deg] z-10"
     },
     {
-      src: "/src/assets/valeria-dancer.jpg",
+      src: valeriaDancer,
       alt: "Tango Oleo",
       className: "w-[240px] h-[360px] left-[15%] top-[35%] rotate-[-2deg] z-20"
     },
     {
-      src: "/src/assets/tango-class.jpg",
+      src: tangoClass,
       alt: "Que Quilombo",
       className: "w-[250px] h-[375px] left-[48%] top-[40%] rotate-[3deg] z-10"
     }

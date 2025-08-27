@@ -2,6 +2,20 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import { PlayCircle, ChevronLeft, ChevronRight, X } from "lucide-react";
 
+// Import images
+import tangoOleo from "@/assets/shows/tango-oleo.jpeg";
+import notasTango from "@/assets/shows/notas-del-tango.jpeg";
+import detrasMi from "@/assets/shows/detras-de-mi.jpeg";
+import damaPuerto from "@/assets/shows/dama-del-puerto.jpg";
+import ioTango from "@/assets/shows/io-tango.jpg";
+import miTango from "@/assets/shows/mi-tango.jpeg";
+import malenaBaila from "@/assets/shows/malena-baila.jpeg";
+import queQuilombo from "@/assets/shows/que-quilombo.jpeg";
+import juergaTangos from "@/assets/shows/juerga-tangos.jpg";
+import lasOrquestas from "@/assets/shows/las-orquestas.jpeg";
+import manonTango from "@/assets/shows/manon-tango.jpeg";
+import rebozo from "@/assets/shows/rebozo.jpg";
+
 interface VideoItem {
   type: 'video';
   id: string;
@@ -26,82 +40,82 @@ const Gallery = () => {
       type: 'video',
       id: "PQM7bVGOrxM",
       title: "Performance en vivo",
-      thumbnail: "/src/assets/shows/tango-oleo.jpeg"
+      thumbnail: tangoOleo
     },
     {
       type: 'video',
       id: "AHz-Shfcef8",
       title: "Espectáculo",
-      thumbnail: "/src/assets/shows/notas-del-tango.jpeg"
+      thumbnail: notasTango
     },
     {
       type: 'video',
       id: "z-JPHGXkzNo",
       title: "Presentación especial",
-      thumbnail: "/src/assets/shows/detras-de-mi.jpeg"
+      thumbnail: detrasMi
     },
     {
       type: 'video',
       id: "pNxXRVUsSlo",
       title: "Danza en escena",
-      thumbnail: "/src/assets/shows/dama-del-puerto.jpg"
+      thumbnail: damaPuerto
     },
     {
       type: 'video',
       id: "nznr1-riZ3Q",
       title: "Performance",
-      thumbnail: "/src/assets/shows/io-tango.jpg"
+      thumbnail: ioTango
     },
     {
       type: 'video',
       id: "ohZYsXG5qK0",
       title: "Espectáculo en vivo",
-      thumbnail: "/src/assets/shows/mi-tango.jpeg"
+      thumbnail: miTango
     },
     {
       type: 'video',
       id: "vrsSZRXlyXY",
       title: "Presentación artística",
-      thumbnail: "/src/assets/shows/malena-baila.jpeg"
+      thumbnail: malenaBaila
     },
     {
       type: 'video',
       id: "OhZinnRN7vg",
       title: "Danza",
-      thumbnail: "/src/assets/shows/que-quilombo.jpeg"
+      thumbnail: queQuilombo
     },
     {
       type: 'video',
       id: "VWwaL_ZxK-E",
       title: "Juerga por Tangos",
-      thumbnail: "/src/assets/shows/juerga-tangos.jpg"
+      thumbnail: juergaTangos
     },
     {
       type: 'video',
       id: "AbbQDFGEJF4",
       title: "Tango Óleo sobre Tela",
-      thumbnail: "/src/assets/shows/tango-oleo.jpeg"
+      thumbnail: tangoOleo
     },
     {
       type: 'video',
       id: "8f_CkDVLHxo",
       title: "Qué Quilombo",
-      thumbnail: "/src/assets/shows/que-quilombo.jpeg"
+      thumbnail: queQuilombo
     }
   ];
 
   const images: ImageItem[] = [
-    { type: 'image', src: "/src/assets/shows/dama-del-puerto.jpg", title: "La Dama del Puerto" },
-    { type: 'image', src: "/src/assets/shows/detras-de-mi.jpeg", title: "Detrás de mí" },
-    { type: 'image', src: "/src/assets/shows/io-tango.jpg", title: "IO Tango" },
-    { type: 'image', src: "/src/assets/shows/las-orquestas.jpeg", title: "Las Orquestas" },
-    { type: 'image', src: "/src/assets/shows/malena-baila.jpeg", title: "Malena Baila" },
-    { type: 'image', src: "/src/assets/shows/manon-tango.jpeg", title: "Manon Tango" },
-    { type: 'image', src: "/src/assets/shows/mi-tango.jpeg", title: "Mi Tango" },
-    { type: 'image', src: "/src/assets/shows/notas-del-tango.jpeg", title: "Notas del Tango" },
-    { type: 'image', src: "/src/assets/shows/que-quilombo.jpeg", title: "Qué Quilombo" },
-    { type: 'image', src: "/src/assets/shows/rebozo.jpg", title: "Rebozo" },
-    { type: 'image', src: "/src/assets/shows/tango-oleo.jpeg", title: "Tango Óleo" }
+    { type: 'image', src: damaPuerto, title: "La Dama del Puerto" },
+    { type: 'image', src: detrasMi, title: "Detrás de mí" },
+    { type: 'image', src: ioTango, title: "IO Tango" },
+    { type: 'image', src: lasOrquestas, title: "Las Orquestas" },
+    { type: 'image', src: malenaBaila, title: "Malena Baila" },
+    { type: 'image', src: manonTango, title: "Manon Tango" },
+    { type: 'image', src: miTango, title: "Mi Tango" },
+    { type: 'image', src: notasTango, title: "Notas del Tango" },
+    { type: 'image', src: queQuilombo, title: "Qué Quilombo" },
+    { type: 'image', src: rebozo, title: "Rebozo" },
+    { type: 'image', src: tangoOleo, title: "Tango Óleo" }
   ];
 
   const galleryItems: GalleryItem[] = [...videos, ...images].sort(() => Math.random() - 0.5);
