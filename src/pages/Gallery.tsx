@@ -1,259 +1,444 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
+import { useState, useEffect, useRef } from "react";
 import { PlayCircle, ChevronLeft, ChevronRight, X } from "lucide-react";
 
-// Import images
-import tangoOleo from "@/assets/shows/tango-oleo.jpeg";
-import notasTango from "@/assets/shows/notas-del-tango.jpeg";
-import detrasMi from "@/assets/shows/detras-de-mi.jpeg";
-import damaPuerto from "@/assets/shows/dama-del-puerto.jpg";
-import ioTango from "@/assets/shows/io-tango.jpg";
-import miTango from "@/assets/shows/mi-tango.jpeg";
-import malenaBaila from "@/assets/shows/malena-baila.jpeg";
-import queQuilombo from "@/assets/shows/que-quilombo.jpeg";
-import juergaTangos from "@/assets/shows/juerga-tangos.jpg";
-import lasOrquestas from "@/assets/shows/las-orquestas.jpeg";
-import manonTango from "@/assets/shows/manon-tango.jpeg";
-import rebozo from "@/assets/shows/rebozo.jpg";
+// Import images originales
+
+// Fotos generales
+import horacioValeBn from "@/assets/fotos/horacio_vale_bn.jpg";
+import horacioValeColor from "@/assets/fotos/horacio_vale_color.jpg";
+import pose1 from "@/assets/fotos/pose1.png";
+import valeBn from "@/assets/fotos/vale_bn.webp";
+import valeriaPortada from "@/assets/fotos/valeria-portada.jpg";
+import tangoOleo from "@/assets/varios/tango-oleo.jpeg";
+import queQuilombo from "@/assets/varios/que-quilombo.jpeg";
+
+// Import extra para thumbnails de videos
+
+// Shows - detras
+import detrasAbrazo from "@/assets/shows/detras/detras-abrazo.jpeg";
+import detrasPiso from "@/assets/shows/detras/detras-piso.jpeg";
+import detrasPose from "@/assets/shows/detras/detras-pose.jpeg";
+import valeMesa from "@/assets/shows/detras/vale-mesa.jpg";
+
+// Shows - dama
+import damaPuerto from "@/assets/shows/dama/dama-del-puerto.jpg";
+
+// Shows - rebozo
+import rebozo from "@/assets/shows/rebozo/rebozo.jpg";
+import valeRebozo from "@/assets/shows/rebozo/valeria-rebozo.jpg";
+
+// Shows - notas
+import notasTango from "@/assets/shows/notas/notas-del-tango.jpeg";
+
+// Shows - colores
+import coloresDelTango from "@/assets/shows/colores/colores-del-tango.jpeg";
+import parejasColores from "@/assets/shows/colores/parejas_colores.jpg";
 
 interface VideoItem {
-  type: 'video';
-  id: string;
+  type: "video";
+  id: string; // YouTube ID
   title: string;
-  thumbnail: string;
+  thumbnail: string; // local thumb
 }
 
 interface ImageItem {
-  type: 'image';
+  type: "image";
   src: string;
   title?: string;
 }
 
-type GalleryItem = VideoItem | ImageItem;
-
 const Gallery = () => {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
+    null
+  );
+
+  // Por defecto: FOTOS
+  const [section, setSection] = useState<"all" | "videos" | "images">("images");
+
+  // "Peek" mobile
+  const [peekImageIndex, setPeekImageIndex] = useState<number | null>(null);
+  const [peekVideoIndex, setPeekVideoIndex] = useState<number | null>(null);
+  const peekImgTimer = useRef<number | null>(null);
+  const peekVidTimer = useRef<number | null>(null);
 
   const videos: VideoItem[] = [
     {
-      type: 'video',
+      type: "video",
       id: "PQM7bVGOrxM",
-      title: "Performance en vivo",
-      thumbnail: tangoOleo
+      title: "Valeria",
+      thumbnail: valeriaPortada,
     },
     {
-      type: 'video',
+      type: "video",
       id: "AHz-Shfcef8",
-      title: "Espectáculo",
-      thumbnail: notasTango
+      title: "Rebozo",
+      thumbnail: valeRebozo,
     },
     {
-      type: 'video',
+      type: "video",
       id: "z-JPHGXkzNo",
-      title: "Presentación especial",
-      thumbnail: detrasMi
+      title: "Valeria y Horacio",
+      thumbnail: horacioValeColor,
     },
     {
-      type: 'video',
+      type: "video",
       id: "pNxXRVUsSlo",
-      title: "Danza en escena",
-      thumbnail: damaPuerto
+      title: "La Dama del Puerto",
+      thumbnail: damaPuerto,
     },
     {
-      type: 'video',
+      type: "video",
       id: "nznr1-riZ3Q",
       title: "Performance",
-      thumbnail: ioTango
+      thumbnail: detrasPose,
     },
     {
-      type: 'video',
+      type: "video",
       id: "ohZYsXG5qK0",
-      title: "Espectáculo en vivo",
-      thumbnail: miTango
+      title: "Valeria en Morelia",
+      thumbnail: detrasPiso,
     },
     {
-      type: 'video',
+      type: "video",
       id: "vrsSZRXlyXY",
-      title: "Presentación artística",
-      thumbnail: malenaBaila
+      title: "Valeria y Froyamel",
+      thumbnail: notasTango,
     },
     {
-      type: 'video',
+      type: "video",
       id: "OhZinnRN7vg",
-      title: "Danza",
-      thumbnail: queQuilombo
+      title: "Valeria y Abdel",
+      thumbnail: parejasColores,
     },
     {
-      type: 'video',
+      type: "video",
       id: "VWwaL_ZxK-E",
       title: "Juerga por Tangos",
-      thumbnail: juergaTangos
+      thumbnail: valeBn,
     },
     {
-      type: 'video',
+      type: "video",
       id: "AbbQDFGEJF4",
       title: "Tango Óleo sobre Tela",
-      thumbnail: tangoOleo
+      thumbnail: tangoOleo,
     },
     {
-      type: 'video',
+      type: "video",
       id: "8f_CkDVLHxo",
       title: "Qué Quilombo",
-      thumbnail: queQuilombo
-    }
+      thumbnail: queQuilombo,
+    },
   ];
 
   const images: ImageItem[] = [
-    { type: 'image', src: damaPuerto, title: "La Dama del Puerto" },
-    { type: 'image', src: detrasMi, title: "Detrás de mí" },
-    { type: 'image', src: ioTango, title: "IO Tango" },
-    { type: 'image', src: lasOrquestas, title: "Las Orquestas" },
-    { type: 'image', src: malenaBaila, title: "Malena Baila" },
-    { type: 'image', src: manonTango, title: "Manon Tango" },
-    { type: 'image', src: miTango, title: "Mi Tango" },
-    { type: 'image', src: notasTango, title: "Notas del Tango" },
-    { type: 'image', src: queQuilombo, title: "Qué Quilombo" },
-    { type: 'image', src: rebozo, title: "Rebozo" },
-    { type: 'image', src: tangoOleo, title: "Tango Óleo" }
+    // Fotos generales
+    { type: "image", src: valeBn },
+    { type: "image", src: valeriaPortada },
+    { type: "image", src: horacioValeBn },
+    { type: "image", src: horacioValeColor },
+    { type: "image", src: pose1 },
+
+    // Shows - detras
+    { type: "image", src: valeMesa },
+    { type: "image", src: detrasAbrazo },
+    { type: "image", src: detrasPiso },
+    { type: "image", src: detrasPose },
+    // Shows - dama
+    { type: "image", src: damaPuerto },
+    // Shows - rebozo
+    { type: "image", src: rebozo },
+    { type: "image", src: valeRebozo },
+    // Shows - colores
+    { type: "image", src: parejasColores },
   ];
 
-  const galleryItems: GalleryItem[] = [...videos, ...images].sort(() => Math.random() - 0.5);
-
+  // Navegación modal (solo images)
   const onNext = () => {
     if (selectedImageIndex === null) return;
-    const nextIndex = (selectedImageIndex + 1) % galleryItems.length;
-    setSelectedImageIndex(nextIndex);
+    setSelectedImageIndex((selectedImageIndex + 1) % images.length);
   };
-
   const onPrevious = () => {
     if (selectedImageIndex === null) return;
-    const prevIndex = (selectedImageIndex - 1 + galleryItems.length) % galleryItems.length;
-    setSelectedImageIndex(prevIndex);
+    setSelectedImageIndex(
+      (selectedImageIndex - 1 + images.length) % images.length
+    );
   };
 
+  // Navegación por teclado cuando hay imagen abierta
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (selectedImageIndex !== null) {
-        if (e.key === 'ArrowRight') onNext();
-        if (e.key === 'ArrowLeft') onPrevious();
-        if (e.key === 'Escape') setSelectedImageIndex(null);
+        if (e.key === "ArrowRight") onNext();
+        if (e.key === "ArrowLeft") onPrevious();
+        if (e.key === "Escape") setSelectedImageIndex(null);
       }
     };
-
-    window.addEventListener('keydown', handleGlobalKeyDown);
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, [selectedImageIndex]);
+
+  // Limpia timers al desmontar
+  useEffect(() => {
+    return () => {
+      if (peekImgTimer.current) window.clearTimeout(peekImgTimer.current);
+      if (peekVidTimer.current) window.clearTimeout(peekVidTimer.current);
+    };
+  }, []);
+
+  const handleImageTouch = (index: number) => {
+    if (peekImgTimer.current) window.clearTimeout(peekImgTimer.current);
+    setPeekImageIndex(index);
+    peekImgTimer.current = window.setTimeout(
+      () => setPeekImageIndex(null),
+      1200
+    );
+  };
+  const handleVideoTouch = (index: number) => {
+    if (peekVidTimer.current) window.clearTimeout(peekVidTimer.current);
+    setPeekVideoIndex(index);
+    peekVidTimer.current = window.setTimeout(
+      () => setPeekVideoIndex(null),
+      1200
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background pt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
         {/* Header */}
-        <div className="text-right mb-20 animate-slide-up">
+        <div className="text-right mb-12 animate-slide-up">
           <h1 className="text-5xl md:text-7xl font-serif font-light text-primary mb-8">
             Galería
           </h1>
           <div className="w-24 h-px bg-cultural ml-auto mr-0 opacity-60"></div>
         </div>
 
-        {/* Gallery Grid - Fixed 3 columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {galleryItems.map((item, index) => (
-            <div
-              key={item.type === 'video' ? item.id : item.src}
-              className="animate-fade-in"
-            >
-              <div 
-                className="group relative overflow-hidden rounded-xl shadow-xl transition-all duration-500 hover:shadow-2xl transform hover:-translate-y-1 cursor-pointer"
-                onClick={() => {
-                  if (item.type === 'video') {
-                    setSelectedVideo(item.id);
-                  } else {
-                    setSelectedImageIndex(index);
-                  }
-                }}
-              >
-                <div className="aspect-[3/4] relative">
-                  <img 
-                    src={item.type === 'video' ? item.thumbnail : item.src} 
-                    alt={item.title || 'Gallery'}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-                  {item.type === 'video' && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-accent/20 rounded-full blur-xl transition-all duration-500 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100" />
-                        <PlayCircle className="w-16 h-16 text-white/90 transition-all duration-500 transform group-hover:scale-110 relative z-10 group-hover:text-white" strokeWidth={1.5} />
+        {/* Filtro */}
+        <div className="flex items-center justify-center gap-2 mb-12">
+          <button
+            onClick={() => setSection("images")}
+            className={`px-4 py-2 rounded-full text-sm font-light border transition-all ${
+              section === "images"
+                ? "bg-accent/10 text-accent border-accent/30"
+                : "bg-transparent text-foreground/70 border-border/40 hover:text-accent"
+            }`}
+          >
+            Fotos
+          </button>
+          <button
+            onClick={() => setSection("videos")}
+            className={`px-4 py-2 rounded-full text-sm font-light border transition-all ${
+              section === "videos"
+                ? "bg-accent/10 text-accent border-accent/30"
+                : "bg-transparent text-foreground/70 border-border/40 hover:text-accent"
+            }`}
+          >
+            Videos
+          </button>
+          <button
+            onClick={() => setSection("all")}
+            className={`px-4 py-2 rounded-full text-sm font-light border transition-all ${
+              section === "all"
+                ? "bg-accent/10 text-accent border-accent/30"
+                : "bg-transparent text-foreground/70 border-border/40 hover:text-accent"
+            }`}
+          >
+            Todo
+          </button>
+        </div>
+
+        {/* FOTOS */}
+        {(section === "all" || section === "images") && (
+          <section id="fotos">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl md:text-3xl font-serif font-light text-primary">
+                Fotos
+              </h2>
+              <div className="h-px w-24 bg-cultural opacity-60" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {images.map((item, index) => (
+                <div key={item.src} className="animate-fade-in">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedImageIndex(index)}
+                    onTouchStart={() => handleImageTouch(index)}
+                    data-peek={peekImageIndex === index}
+                    className="group relative block overflow-hidden rounded-xl shadow-xl transition-all duration-400 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-accent/40"
+                  >
+                    <div className="aspect-[3/4] relative">
+                      <img
+                        src={item.src}
+                        alt={item.title || "Foto de galería"}
+                        className="w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.03]"
+                        draggable={false}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent opacity-0 group-hover:opacity-100 data-[peek=true]:opacity-100 transition-opacity duration-300" />
+                      {item.title && (
+                        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 data-[peek=true]:translate-y-0 data-[peek=true]:opacity-100 transition-all duration-300">
+                          <h3 className="text-white font-serif text-base md:text-lg drop-shadow">
+                            {item.title}
+                          </h3>
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* VIDEOS */}
+        {(section === "all" || section === "videos") && (
+          <section id="videos" className="mt-16">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl md:text-3xl font-serif font-light text-primary">
+                Videos
+              </h2>
+              <div className="h-px w-24 bg-cultural opacity-60" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {videos.map((item, vIndex) => (
+                <div key={item.id} className="animate-fade-in">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedVideo(item.id)}
+                    onTouchStart={() => handleVideoTouch(vIndex)}
+                    data-peek={peekVideoIndex === vIndex}
+                    className="group relative block overflow-hidden rounded-xl shadow-xl transition-all duration-400 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-accent/40"
+                  >
+                    <div className="aspect-[4/3] relative">
+                      <img
+                        src={item.thumbnail}
+                        alt={item.title}
+                        className="w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.03]"
+                        draggable={false}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 data-[peek=true]:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-accent/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 data-[peek=true]:opacity-100 transition-opacity duration-300" />
+                          <PlayCircle
+                            className="w-16 h-16 text-white/90 group-hover:text-white data-[peek=true]:text-white transition-transform duration-300 group-hover:scale-110 data-[peek=true]:scale-110 relative z-10"
+                            strokeWidth={1.5}
+                          />
+                        </div>
+                      </div>
+                      <div className="absolute inset-x-0 bottom-0 p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 data-[peek=true]:translate-y-0 data-[peek=true]:opacity-100 transition-all duration-300">
+                        <h3 className="text-white font-serif text-base md:text-lg drop-shadow">
+                          {item.title}
+                        </h3>
                       </div>
                     </div>
-                  )}
-                  <div className="absolute inset-x-0 bottom-0 p-6 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                    <h3 className="text-white font-serif text-lg">
-                      {item.title}
-                    </h3>
-                  </div>
+                  </button>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </section>
+        )}
       </div>
 
       {/* Video Dialog */}
-      <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
+      <Dialog
+        open={!!selectedVideo}
+        onOpenChange={() => setSelectedVideo(null)}
+      >
         <DialogContent className="max-w-5xl p-0">
           <div className="aspect-video w-full">
             <iframe
-              src={selectedVideo ? `https://www.youtube.com/embed/${selectedVideo}` : ''}
+              src={
+                selectedVideo
+                  ? `https://www.youtube.com/embed/${selectedVideo}`
+                  : ""
+              }
               title="Video"
-              frameBorder="0"
+              frameBorder={0}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               className="w-full h-full"
-            ></iframe>
+            />
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Image Dialog - Adjusted for better viewing */}
-      <Dialog 
-        open={selectedImageIndex !== null} 
+      {/* Image Dialog (mejorado) */}
+      <Dialog
+        open={selectedImageIndex !== null}
         onOpenChange={() => setSelectedImageIndex(null)}
       >
-        <DialogContent className="max-w-[90vw] max-h-[90vh] w-full h-full p-0 bg-black/95 border-none">
-          <div className="relative w-full h-full flex items-center justify-center">
-            {selectedImageIndex !== null && (
+        <DialogContent
+          className="max-w-[90vw] max-h-[90vh] w-full h-full p-0 bg-black/95 border-none transition-all duration-300 ease-out animate-fade-zoom"
+          // evita que el focus auto mueva la página; dejamos el foco donde esté
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <style>{`
+            @keyframes fadeZoomIn {
+              0% { opacity: 0; transform: scale(0.96); }
+              100% { opacity: 1; transform: scale(1); }
+            }
+            @keyframes fadeZoomOut {
+              0% { opacity: 1; transform: scale(1); }
+              100% { opacity: 0; transform: scale(0.96); }
+            }
+            .animate-fade-zoom {
+              animation: fadeZoomIn 0.32s cubic-bezier(0.4,0,0.2,1);
+            }
+          `}</style>
+          <div className="relative w-full h-full flex items-center justify-center touch-pan-y">
+            {selectedImageIndex !== null && images[selectedImageIndex] && (
               <>
-                <img 
-                  src={galleryItems[selectedImageIndex].type === 'video' 
-                    ? galleryItems[selectedImageIndex].thumbnail 
-                    : galleryItems[selectedImageIndex].src
-                  }
-                  alt={galleryItems[selectedImageIndex].title || 'Gallery'}
-                  className="h-[85vh] w-auto object-contain rounded-lg"
+                <img
+                  src={images[selectedImageIndex].src}
+                  alt={images[selectedImageIndex].title || "Foto de galería"}
+                  className="h-[85vh] w-auto object-contain rounded-lg select-none transition-all duration-300 ease-out animate-fade-zoom"
+                  draggable={false}
                 />
+
+                {/* Cerrar (DialogClose) — grande, claro, con safe-area */}
+                <DialogClose asChild>
+                  <button
+                    type="button"
+                    aria-label="Cerrar"
+                    className="absolute right-4 top-4 z-20 rounded-full bg-black/40 hover:bg-black/60 text-white/90
+                               p-2.5 backdrop-blur-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
+                    // top seguro para notch
+                    style={{ top: "max(1rem, env(safe-area-inset-top))" }}
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </DialogClose>
+
+                {/* Prev */}
                 <button
-                  onClick={() => setSelectedImageIndex(null)}
-                  className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors"
-                >
-                  <X className="h-6 w-6" />
-                </button>
-                <button
+                  type="button"
+                  aria-label="Anterior"
                   onClick={onPrevious}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 text-white/70 hover:text-white transition-all"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-black/45 hover:bg-black/65
+                             p-2.5 text-white/90 backdrop-blur-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
                 >
-                  <ChevronLeft className="h-8 w-8" />
+                  <ChevronLeft className="h-7 w-7" />
                 </button>
+
+                {/* Next */}
                 <button
+                  type="button"
+                  aria-label="Siguiente"
                   onClick={onNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 text-white/70 hover:text-white transition-all"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-black/45 hover:bg-black/65
+                             p-2.5 text-white/90 backdrop-blur-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
                 >
-                  <ChevronRight className="h-8 w-8" />
+                  <ChevronRight className="h-7 w-7" />
                 </button>
-                {galleryItems[selectedImageIndex].title && (
-                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white text-xl font-serif">
-                    {galleryItems[selectedImageIndex].title}
+
+                {/* Caption */}
+                {images[selectedImageIndex].title && (
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-white text-lg md:text-xl font-serif px-3 py-1.5 bg-black/35 rounded-md backdrop-blur-sm">
+                    {images[selectedImageIndex].title}
                   </div>
                 )}
               </>

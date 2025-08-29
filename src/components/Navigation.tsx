@@ -1,27 +1,35 @@
-import { Facebook, Instagram, Twitter, Youtube, Menu, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { Facebook, Instagram, Twitter, Youtube, Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 import logo from "@/assets/logo.svg";
 
 const Navigation = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const navItems = [
-    { name: 'Inicio', href: '/' },
-    { name: 'Acerca&nbsp;de', href: '/about' },
-    { name: 'Clases', href: '/classes' },
-    { name: 'Espectáculos', href: '/shows' },
-    { name: 'Galería', href: '/gallery' },
-    { name: 'Prensa', href: '/press' },
-    { name: 'Contacto', href: '/contact' },
+    { name: "Inicio", href: "/" },
+    { name: "Acerca\u00A0de", href: "/about" },
+    { name: "Clases", href: "/classes" },
+    { name: "Espectáculos", href: "/shows" },
+    { name: "Galería", href: "/gallery" },
+    { name: "Prensa", href: "/press" },
+    { name: "Contacto", href: "/contact" },
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: 'https://facebook.com/valeria.vega.danza', label: 'Facebook' },
-    { icon: Instagram, href: 'https://instagram.com/valeriavegadanza', label: 'Instagram' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Youtube, href: '#', label: 'YouTube' },
+    {
+      icon: Facebook,
+      href: "https://facebook.com/valeria.vega.danza",
+      label: "Facebook",
+    },
+    {
+      icon: Instagram,
+      href: "https://instagram.com/valeriavegadanza",
+      label: "Instagram",
+    },
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Youtube, href: "#", label: "YouTube" },
   ];
 
   return (
@@ -31,9 +39,9 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="group">
-              <img 
-                src={logo} 
-                alt="Valeria Vega" 
+              <img
+                src={logo}
+                alt="Valeria Vega"
                 className="h-12 w-auto hover:opacity-80 transition-minimal"
               />
             </Link>
@@ -47,17 +55,19 @@ const Navigation = () => {
                   key={item.name}
                   to={item.href}
                   className={`relative font-light transition-minimal group ${
-                    location.pathname === item.href 
-                      ? 'text-accent' 
-                      : 'text-foreground/70 hover:text-accent'
+                    location.pathname === item.href
+                      ? "text-accent"
+                      : "text-foreground/70 hover:text-accent"
                   }`}
                 >
                   <span dangerouslySetInnerHTML={{ __html: item.name }} />
-                  <span className={`absolute bottom-0 left-0 h-px bg-accent transition-minimal ${
-                    location.pathname === item.href 
-                      ? 'w-full' 
-                      : 'w-0 group-hover:w-full'
-                  }`}></span>
+                  <span
+                    className={`absolute bottom-0 left-0 h-px bg-accent transition-minimal ${
+                      location.pathname === item.href
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
                 </Link>
               ))}
             </div>
@@ -80,8 +90,8 @@ const Navigation = () => {
             </div>
 
             {/* Menu button - visible on screens below xl */}
-            <button 
-              onClick={() => setIsOpen(!isOpen)} 
+            <button
+              onClick={() => setIsOpen(!isOpen)}
               className="xl:hidden p-2 text-primary hover:text-accent transition-minimal"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -91,8 +101,8 @@ const Navigation = () => {
       </div>
 
       {/* Dropdown menu */}
-      <div 
-        className={`xl:hidden absolute right-0 top-20 w-64 bg-background/95 backdrop-blur-md border-border/30 border shadow-lg rounded-bl-lg ${isOpen ? 'block' : 'hidden'}`}
+      <div
+        className={`xl:hidden absolute right-0 top-20 w-64 bg-background/95 backdrop-blur-md border-border/30 border shadow-lg rounded-bl-lg ${isOpen ? "block" : "hidden"}`}
       >
         <div className="divide-y divide-border/30">
           <div className="py-4">
@@ -102,16 +112,16 @@ const Navigation = () => {
                 to={item.href}
                 onClick={() => setIsOpen(false)}
                 className={`block px-6 py-3 text-base font-light transition-minimal ${
-                  location.pathname === item.href 
-                    ? 'text-accent' 
-                    : 'text-foreground/70 hover:text-accent hover:bg-accent/5'
+                  location.pathname === item.href
+                    ? "text-accent"
+                    : "text-foreground/70 hover:text-accent hover:bg-accent/5"
                 }`}
               >
                 {item.name}
               </Link>
             ))}
           </div>
-          
+
           {/* Social Links */}
           <div className="py-4 px-6">
             <div className="flex items-center justify-center space-x-6">

@@ -1,18 +1,18 @@
-// Import show images
-import lasOrquestasImg from "@/assets/shows/las-orquestas.jpeg";
-import detrasDeMiImg from "@/assets/shows/detras-de-mi.jpeg";
-import rebozoImg from "@/assets/shows/rebozo.jpg";
-import damaPuertoImg from "@/assets/shows/dama-del-puerto.jpg";
-import suenoVeranoImg from "@/assets/shows/sueno-verano.jpg";
-import notasTangoImg from "@/assets/shows/notas-del-tango.jpeg";
-import manonTangoImg from "@/assets/shows/manon-tango.jpeg";
-import coloresTangoImg from "@/assets/shows/colores-del-tango.jpeg";
-import miTangoImg from "@/assets/shows/mi-tango.jpeg";
-import queQuilomboImg from "@/assets/shows/que-quilombo.jpeg";
-import tangoOleoImg from "@/assets/shows/tango-oleo.jpeg";
-import ioTangoImg from "@/assets/shows/io-tango.jpg";
-import juergaTangosImg from "@/assets/shows/juerga-tangos.jpg";
-import malenaBailaImg from "@/assets/shows/malena-baila.jpeg";
+import lasOrquestasImg from "@/assets/varios/las-orquestas.jpeg";
+import detrasDeMiImg from "@/assets/shows/detras/detras-pose.jpeg";
+import rebozoImg from "@/assets/shows/rebozo/rebozo.jpg";
+import damaPuertoImg from "@/assets/shows/dama/dama-del-puerto.jpg";
+import suenoVeranoImg from "@/assets/shows/verano/sueno-verano.jpg";
+import notasTangoImg from "@/assets/shows/notas/notas-del-tango.jpeg";
+import manonTangoImg from "@/assets/shows/manon/manon-tango.jpeg";
+import coloresTangoImg from "@/assets/shows/colores/colores-del-tango.jpeg";
+import miTangoImg from "@/assets/varios/mi-tango.jpeg";
+import queQuilomboImg from "@/assets/varios/que-quilombo.jpeg";
+import tangoOleoImg from "@/assets/varios/tango-oleo.jpeg";
+import ioTangoImg from "@/assets/shows/io/io-tango.jpg";
+import juergaTangosImg from "@/assets/varios/juerga-tangos.jpg";
+import malenaBailaImg from "@/assets/shows/malena/malena-baila.jpeg";
+import valeBnImg from "@/assets/fotos/vale_bn.webp";
 
 const Shows = () => {
   const shows = [
@@ -92,7 +92,7 @@ const Shows = () => {
       year: "2007",
       title: "JUERGA POR TANGOS",
       gradient: "from-purple-600 via-violet-600 to-indigo-600",
-      image: juergaTangosImg,
+      image: valeBnImg,
     },
     {
       year: "2006",
@@ -122,10 +122,11 @@ const Shows = () => {
           <div className="bg-card/50 backdrop-blur-sm p-8 rounded-sm border border-border/30">
             <div className="space-y-6">
               <p className="font-sans text-[17px] leading-relaxed text-gray-200">
-                Valeria Vega Solórzano funda con Mario Fratta en 2006 iO Artes Escénicas. Utiliza el 
-                lenguaje teatral y dancístico para crear espectáculos que
-                cuentan historias y transportan al espectador al encuentro con
-                sus pasiones desde una concepción e interpretación propias.
+                Valeria Vega Solórzano funda con Mario Fratta en 2006 iO Artes
+                Escénicas. Utiliza el lenguaje teatral y dancístico para crear
+                espectáculos que cuentan historias y transportan al espectador
+                al encuentro con sus pasiones desde una concepción e
+                interpretación propias.
               </p>
 
               <p className="font-sans text-[17px] leading-relaxed text-gray-300">
@@ -156,11 +157,11 @@ const Shows = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Show image */}
-                <div className="relative h-96 overflow-hidden">
+                <div className="relative h-96 overflow-hidden ">
                   <img
                     src={show.image}
                     alt={show.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover object-[50%_30%] transition-transform duration-400 group-hover:scale-[1.03]"
                   />
                   <div
                     className={`absolute inset-0 bg-gradient-to-t ${show.gradient} opacity-10 group-hover:opacity-0 transition-opacity duration-500`}

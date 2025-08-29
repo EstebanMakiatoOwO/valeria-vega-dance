@@ -1,8 +1,8 @@
 // Import dance class images
-import tangoImage from "../assets/tango-class.jpg";
-import musicalImage from "../assets/musical-theater-class.jpg";
-import moovLogo from "../assets/moov-studio.png";
-import cuerposPoster from "../assets/cuerpos-bilingues.png"; // Usar un poster de cuerpos bilingües
+import tangoImage from "../assets/clases/tango-class.jpg";
+import musicalImage from "../assets/clases/musical-theater-class.jpg";
+import moovLogo from "../assets/clases/moov-studio.png";
+import cuerposPoster from "../assets/clases/cuerpos-bilingues.png"; // Usar un poster de cuerpos bilingües
 import { MapPin, Phone, ExternalLink } from "lucide-react";
 
 const Classes = () => {
@@ -71,7 +71,7 @@ const Classes = () => {
           title: "Grupo coreográfico de Tango Escénico",
           level: "Todos los niveles",
           description:
-            "Grupo coreográfico para aprender y montar piezas de tango escénico. Ideal para quienes buscan presentarse en escenarios y festivales.\n\nLugar: Famma\nDirección: Gobernador Melchor Musquiz 38, San Miguel Chapultepec.",
+            "Grupo coreográfico para aprender y montar piezas de tango escénico. Ideal para quienes buscan presentarse en escenarios y festivales. \n\nLugar: Famma\nDirección: Gobernador Melchor Musquiz 38, San Miguel Chapultepec.",
           schedule: "Sábados 16-18 hrs",
           image: tangoImage,
           gradient: "from-[#6EA995] to-[#7BB5A2]",
@@ -93,7 +93,7 @@ const Classes = () => {
           </h1>
           <div className="w-24 h-px bg-cultural ml-auto mr-0 opacity-60 mb-6"></div>
         </div>
-        
+
         {/* Studios and Classes */}
         <div className="space-y-16">
           {studios.map((studio, studioIndex) => (
@@ -171,7 +171,7 @@ const Classes = () => {
                 {studio.classes.map((classItem, classIndex) => (
                   <div
                     key={`${studio.name}-${classItem.title}`}
-                    className={`group relative overflow-hidden ${classItem.bgColor} backdrop-blur-md border ${classItem.borderColor} rounded-2xl hover:shadow-2xl transition-all duration-500 animate-fade-in hover:scale-[1.02]`}
+                    className={`group relative overflow-hidden ${classItem.bgColor} backdrop-blur-md border ${classItem.borderColor} rounded-2xl hover:shadow-2xl transition-all duration-500 animate-fade-in hover:scale-[1.005]`}
                     style={{
                       animationDelay: `${(studioIndex * studio.classes.length + classIndex) * 0.2}s`,
                     }}
@@ -215,15 +215,19 @@ const Classes = () => {
                             ></div>
                           </div>
 
-                          <p className="text-gray-700 font-light leading-relaxed text-lg">
+                          <p className="text-gray-700 font-light leading-relaxed text-lg whitespace-pre-line">
                             {classItem.description}
                           </p>
 
                           {/* Schedule card */}
                           {classItem.schedule && (
                             <div className="bg-white/60 border border-gray-300/30 rounded-xl p-6 backdrop-blur-sm flex flex-col items-start">
-                              <div className="text-gray-500 font-light text-sm mb-2">Horario</div>
-                              <div className="text-gray-800 font-light text-lg whitespace-pre-line mb-4">{classItem.schedule}</div>
+                              <div className="text-gray-500 font-light text-sm mb-2">
+                                Horario
+                              </div>
+                              <div className="text-gray-800 font-light text-lg whitespace-pre-line mb-4">
+                                {classItem.schedule}
+                              </div>
                               {/* Info de contacto y links alineados en vertical, pegados a la izquierda y con logo MOOV */}
                               <div className="flex flex-col items-start gap-3 mt-2 w-full">
                                 {studio.logo && (
