@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import valeriaDancer from "@/assets/fotos/valeria-portada.jpg";
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/logo.png";
 
 const Home = () => {
   return (
