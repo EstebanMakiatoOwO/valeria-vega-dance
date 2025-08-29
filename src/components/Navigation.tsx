@@ -1,7 +1,7 @@
 import { Facebook, Instagram, Twitter, Youtube, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/logo.png";
 
 const Navigation = () => {
   const location = useLocation();
