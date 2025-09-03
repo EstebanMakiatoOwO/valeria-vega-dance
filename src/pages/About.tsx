@@ -92,11 +92,6 @@ const About = () => {
                     willChange: "transform, opacity",
                   }}
                 >
-                  {/* Línea decorativa alineada según el lado */}
-                  <div
-                    className={`mb-6 ${isReversed ? "ml-0 mr-auto" : "ml-auto mr-0"} w-20 h-px bg-cultural opacity-60`}
-                  />
-
                   <div className="space-y-6 md:space-y-7">
                     {block.paragraphs.map((p, k) => (
                       <p

@@ -1,129 +1,11 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { PlayCircle } from "lucide-react";
-
-import tangoOleo from "@/assets/varios/tango-oleo.jpeg";
-import detrasDeMi from "@/assets/shows/detras/detras-pose.jpeg";
-import malenaBaila from "@/assets/shows/malena/malena-baila.jpeg";
-import notasDelTango from "@/assets/shows/notas/notas-del-tango.jpeg";
-import ioTango from "@/assets/shows/io/io-tango.jpg";
-import damaDelPuerto from "@/assets/shows/dama/dama-del-puerto.jpg";
-import rebozo from "@/assets/shows/rebozo/rebozo.jpg";
-import queQuilombo from "@/assets/varios/que-quilombo.jpeg";
-import lasOrquestas from "@/assets/varios/las-orquestas.jpeg";
-
-type PressItem =
-  | {
-      type: "article";
-      editorial: string; // Editorial o medio
-      headline: string; // Encabezado o título principal
-      url: string;
-      description: string;
-      image: string;
-    }
-  | {
-      type: "video";
-      title: string;
-      url: string;
-      description: string;
-      thumbnail: string;
-      videoId: string;
-    };
+import { usePressItems } from "../components/usePressItems";
 
 const Press = () => {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-
-  const pressItems: PressItem[] = [
-    {
-      editorial: "La Jornada",
-      headline: "Cultura",
-      url: "https://www.jornada.com.mx/2025/07/20/cultura/a05n1cul",
-      description: "Artículo destacado en La Jornada",
-      type: "article",
-      image: tangoOleo,
-    },
-    {
-      editorial: "El Universal",
-      headline: "Detrás de mí, de mujeres y tangos",
-      url: "https://www.eluniversal.com.mx/cultura/detras-de-mi-de-mujeres-y-tangos-en-busca-de-la-naturaleza-femenina/?utm_source=web",
-      description: "En busca de la naturaleza femenina",
-      type: "article",
-      image: detrasDeMi,
-    },
-    {
-      title: "Entrevista - YouTube",
-      url: "https://www.youtube.com/watch?v=xyCDWj9nMBk",
-      description: "Entrevista en video sobre su trabajo artístico",
-      type: "video",
-      videoId: "xyCDWj9nMBk",
-      thumbnail: malenaBaila,
-    },
-    {
-      editorial: "La Voz de Michoacán",
-      headline: "Valeria Vega y la danza como un pez en el agua",
-      url: "https://www.lavozdemichoacan.com.mx/cultura/jueves/entrevista-valeria-vega-y-la-danza-como-un-pez-en-el-agua/",
-      description: "Entrevista a Valeria Vega",
-      type: "article",
-      image: notasDelTango,
-    },
-    {
-      title: "Presentación - YouTube",
-      url: "https://youtu.be/OrRppUcA4_s?si=IoVIi39aEgWA6ZfW",
-      description: "Presentación de espectáculo",
-      type: "video",
-      videoId: "OrRppUcA4_s",
-      thumbnail: ioTango,
-    },
-    {
-      editorial: "Puerta Escénica",
-      headline: "La Dama del Puerto",
-      url: "https://puertaescenica.com/la-dama-del-puerto-el-tango-que-da-voz-a-las-emociones-humanas/",
-      description: "El tango que da voz a las emociones humanas",
-      type: "article",
-      image: damaDelPuerto,
-    },
-    {
-      editorial: "Puerta Escénica",
-      headline: "Detrás de mí de mujeres y tangos",
-      url: "https://puertaescenica.com/?s=Detr%C3%A1s+de+mi+de+mujeres+y+tangos",
-      description: "Artículo sobre 'Detrás de mí de mujeres y tangos'",
-      type: "article",
-      image: detrasDeMi,
-    },
-    {
-      editorial: "Mi Morelia",
-      headline: "Rebozo",
-      url: "https://mimorelia.com/noticias/morelia/con-rebozo-valeria-vega-reflexiona-acerca-de-la-vida",
-      description:
-        "Reflexión acerca de la vida a través del espectáculo Rebozo",
-      type: "article",
-      image: rebozo,
-    },
-    {
-      editorial: "Cambio de Michoacán",
-      headline: "Rebozo: una vida de danza",
-      url: "https://cambiodemichoacan.com.mx/2024/04/10/rebozo-una-vida-de-danza/",
-      description: "Una vida de danza",
-      type: "article",
-      image: rebozo,
-    },
-    {
-      title: "Documental - YouTube",
-      url: "https://youtu.be/tPRuETlYaFM?si=JHlXTO4I5sn20axa",
-      description: "Documental sobre su trayectoria",
-      type: "video",
-      videoId: "tPRuETlYaFM",
-      thumbnail: queQuilombo,
-    },
-    {
-      editorial: "Excélsior",
-      headline: "Festival de Música de Morelia",
-      url: "https://www.excelsior.com.mx/expresiones/la-musica-se-une-en-el-33-festival-de-musica-de-morelia/1475664",
-      description: "La música se une en el 33 Festival de Música de Morelia",
-      type: "article",
-      image: lasOrquestas,
-    },
-  ];
+  const { loadedPressItems, isLoading, pressItems } = usePressItems();
 
   // Patrón de spans compacto (12 cols en lg): sin full-width, variedad pero discreta
   const spanClass = (i: number) => {
@@ -155,9 +37,14 @@ const Press = () => {
           <div className="w-24 h-px bg-cultural ml-auto mr-0 opacity-60" />
         </div>
 
-        {/* GRID discreto y bien distribuido */}
+        {/* Loading state */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-x-6 gap-y-10">
-          {pressItems.map((item, i) => {
+          {(loadedPressItems.length > 0 ? loadedPressItems : pressItems).map((item, i) => {
             const video = item.type === "video";
             const span = spanClass(i);
             const aspect = aspectClass(video ? "video" : "article");
@@ -190,6 +77,13 @@ const Press = () => {
                       className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.015]"
                       loading="lazy"
                       decoding="async"
+                      onError={(e) => {
+                        // Si la imagen falla, usar una imagen de respaldo de unsplash
+                        const target = e.target as HTMLImageElement;
+                        target.src = `https://source.unsplash.com/random/800x600?${
+                          video ? 'video,play' : 'newspaper,article'
+                        }`;
+                      }}
                     />
 
                     {/* Badge */}
@@ -294,6 +188,7 @@ const Press = () => {
             );
           })}
         </div>
+        )}
       </div>
 
       {/* Video Dialog */}
@@ -304,11 +199,7 @@ const Press = () => {
         <DialogContent className="max-w-5xl p-0">
           <div className="aspect-video w-full">
             <iframe
-              src={
-                selectedVideo
-                  ? `https://www.youtube.com/embed/${selectedVideo}`
-                  : ""
-              }
+              src={selectedVideo ? `https://www.youtube.com/embed/${selectedVideo}` : ""}
               title="Video"
               frameBorder={0}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
