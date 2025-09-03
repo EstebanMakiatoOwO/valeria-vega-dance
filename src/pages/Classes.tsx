@@ -1,5 +1,6 @@
 // Import dance class images
 import tangoImage from "../assets/clases/tango-class.jpg";
+import parejasColoresImage from "../assets/shows/colores/parejas_colores.jpg";
 import musicalImage from "../assets/clases/musical-theater-class.jpg";
 import moovLogo from "../assets/clases/moov-studio.png";
 import cuerposPoster from "../assets/clases/cuerpos-bilingues.png"; // Usar un poster de cuerpos bilingües
@@ -73,7 +74,7 @@ const Classes = () => {
           description:
             "Grupo coreográfico para aprender y montar piezas de tango escénico. Ideal para quienes buscan presentarse en escenarios y festivales. \n\nLugar: Famma\nDirección: Gobernador Melchor Musquiz 38, San Miguel Chapultepec.",
           schedule: "Sábados 16-18 hrs",
-          image: tangoImage,
+          image: parejasColoresImage,
           gradient: "from-[#6EA995] to-[#7BB5A2]",
           color: "[#6EA995]",
           bgColor: "bg-gradient-to-br from-[#6EA995]/20 to-[#7BB5A2]/30",

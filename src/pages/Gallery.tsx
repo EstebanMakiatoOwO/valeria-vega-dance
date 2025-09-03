@@ -1,45 +1,65 @@
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
-import { useState, useEffect, useRef } from "react";
-import { PlayCircle, ChevronLeft, ChevronRight, X } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
 
-// Import images originales
+// Componente para imagen con blur placeholder
+function BlurImage(props: { src: string; thumbnail: string; alt: string }) {
+  const [loaded, setLoaded] = React.useState(false);
+  return (
+    <div className="w-full h-full relative">
+      <img
+        src={props.thumbnail}
+        alt={props.alt}
+        className={`w-full h-full object-cover object-center absolute inset-0 transition-opacity duration-500 ${loaded ? "opacity-0" : "opacity-100 blur-md scale-105"}`}
+        draggable={false}
+        aria-hidden="true"
+      />
+      <img
+        src={props.src}
+        alt={props.alt}
+        className={`w-full h-full object-cover object-center relative transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
+        draggable={false}
+        loading="lazy"
+        onLoad={() => setLoaded(true)}
+      />
+    </div>
+  );
+}
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import LiteYouTubeEmbed from "react-lite-youtube-embed";
+import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
 
-// Fotos generales
 import horacioValeBn from "@/assets/fotos/horacio_vale_bn.jpg";
-import horacioValeColor from "@/assets/fotos/horacio_vale_color.jpg";
 import pose1 from "@/assets/fotos/pose1.png";
-import valeBn from "@/assets/fotos/vale_bn.webp";
-import valeriaPortada from "@/assets/fotos/valeria-portada.jpg";
-import tangoOleo from "@/assets/varios/tango-oleo.jpeg";
-import queQuilombo from "@/assets/varios/que-quilombo.jpeg";
-
-// Import extra para thumbnails de videos
-
-// Shows - detras
 import detrasAbrazo from "@/assets/shows/detras/detras-abrazo.jpeg";
 import detrasPiso from "@/assets/shows/detras/detras-piso.jpeg";
 import detrasPose from "@/assets/shows/detras/detras-pose.jpeg";
 import valeMesa from "@/assets/shows/detras/vale-mesa.jpg";
 
-// Shows - dama
-import damaPuerto from "@/assets/shows/dama/dama-del-puerto.jpg";
+// Importa automáticamente todas las imágenes de galería
+const galeriaImages = Object.entries(
+  import.meta.glob("@/assets/varios/galeria/*", {
+    eager: true,
+    import: "default",
+  })
+);
 
-// Shows - rebozo
-import rebozo from "@/assets/shows/rebozo/rebozo.jpg";
-import valeRebozo from "@/assets/shows/rebozo/valeria-rebozo.jpg";
-
-// Shows - notas
-import notasTango from "@/assets/shows/notas/notas-del-tango.jpeg";
-
-// Shows - colores
-import coloresDelTango from "@/assets/shows/colores/colores-del-tango.jpeg";
-import parejasColores from "@/assets/shows/colores/parejas_colores.jpg";
+// Intenta buscar miniaturas en una subcarpeta thumbnails (mismo nombre de archivo)
+const galeriaThumbnails: Record<string, string> = Object.fromEntries(
+  Object.entries(
+    import.meta.glob("@/assets/varios/galeria/thumbnails/*", {
+      eager: true,
+      import: "default",
+    })
+  ).map(([path, mod]) => [
+    path.replace("/thumbnails", "").replace(/^.*\/([^/]+)$/, "$1"),
+    mod as string,
+  ])
+);
 
 interface VideoItem {
   type: "video";
   id: string; // YouTube ID
   title: string;
-  thumbnail: string; // local thumb
 }
 
 interface ImageItem {
@@ -48,110 +68,58 @@ interface ImageItem {
   title?: string;
 }
 
+// Helpers para miniaturas oficiales de YouTube
+const ytThumbs = (id: string) => ({
+  primary: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
+  fallback: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+});
+
 const Gallery = () => {
-  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null
   );
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
   // Por defecto: FOTOS
   const [section, setSection] = useState<"all" | "videos" | "images">("images");
 
-  // "Peek" mobile
+  // "Peek" mobile / hover
   const [peekImageIndex, setPeekImageIndex] = useState<number | null>(null);
   const [peekVideoIndex, setPeekVideoIndex] = useState<number | null>(null);
   const peekImgTimer = useRef<number | null>(null);
   const peekVidTimer = useRef<number | null>(null);
 
   const videos: VideoItem[] = [
-    {
-      type: "video",
-      id: "PQM7bVGOrxM",
-      title: "Valeria",
-      thumbnail: valeriaPortada,
-    },
-    {
-      type: "video",
-      id: "AHz-Shfcef8",
-      title: "Rebozo",
-      thumbnail: valeRebozo,
-    },
-    {
-      type: "video",
-      id: "z-JPHGXkzNo",
-      title: "Valeria y Horacio",
-      thumbnail: horacioValeColor,
-    },
-    {
-      type: "video",
-      id: "pNxXRVUsSlo",
-      title: "La Dama del Puerto",
-      thumbnail: damaPuerto,
-    },
-    {
-      type: "video",
-      id: "nznr1-riZ3Q",
-      title: "Performance",
-      thumbnail: detrasPose,
-    },
-    {
-      type: "video",
-      id: "ohZYsXG5qK0",
-      title: "Valeria en Morelia",
-      thumbnail: detrasPiso,
-    },
-    {
-      type: "video",
-      id: "vrsSZRXlyXY",
-      title: "Valeria y Froyamel",
-      thumbnail: notasTango,
-    },
-    {
-      type: "video",
-      id: "OhZinnRN7vg",
-      title: "Valeria y Abdel",
-      thumbnail: parejasColores,
-    },
-    {
-      type: "video",
-      id: "VWwaL_ZxK-E",
-      title: "Juerga por Tangos",
-      thumbnail: valeBn,
-    },
-    {
-      type: "video",
-      id: "AbbQDFGEJF4",
-      title: "Tango Óleo sobre Tela",
-      thumbnail: tangoOleo,
-    },
-    {
-      type: "video",
-      id: "8f_CkDVLHxo",
-      title: "Qué Quilombo",
-      thumbnail: queQuilombo,
-    },
+    { type: "video", id: "PQM7bVGOrxM", title: "Valeria" },
+    { type: "video", id: "AHz-Shfcef8", title: "Rebozo" },
+    { type: "video", id: "z-JPHGXkzNo", title: "Valeria y Horacio" },
+    { type: "video", id: "pNxXRVUsSlo", title: "La Dama del Puerto" },
+    { type: "video", id: "nznr1-riZ3Q", title: "Performance" },
+    { type: "video", id: "ohZYsXG5qK0", title: "Valeria en Morelia" },
+    { type: "video", id: "vrsSZRXlyXY", title: "Valeria y Froyamel" },
+    { type: "video", id: "OhZinnRN7vg", title: "Valeria y Abdel" },
+    { type: "video", id: "VWwaL_ZxK-E", title: "Juerga por Tangos" },
+    { type: "video", id: "AbbQDFGEJF4", title: "Tango Óleo sobre Tela" },
+    { type: "video", id: "8f_CkDVLHxo", title: "Qué Quilombo" },
   ];
 
   const images: ImageItem[] = [
-    // Fotos generales
-    { type: "image", src: valeBn },
-    { type: "image", src: valeriaPortada },
     { type: "image", src: horacioValeBn },
-    { type: "image", src: horacioValeColor },
     { type: "image", src: pose1 },
-
-    // Shows - detras
     { type: "image", src: valeMesa },
     { type: "image", src: detrasAbrazo },
     { type: "image", src: detrasPiso },
     { type: "image", src: detrasPose },
-    // Shows - dama
-    { type: "image", src: damaPuerto },
-    // Shows - rebozo
-    { type: "image", src: rebozo },
-    { type: "image", src: valeRebozo },
-    // Shows - colores
-    { type: "image", src: parejasColores },
+    // Añade todas las imágenes de galería automáticamente, con miniaturas si existen
+    ...galeriaImages.map(([path, src]) => {
+      const filename = path.replace(/^.*\/([^/]+)$/, "$1");
+      return {
+        type: "image" as const,
+        src: String(src),
+        // @ts-ignore
+        thumbnail: galeriaThumbnails[filename] || String(src),
+      };
+    }),
   ];
 
   // Navegación modal (solo images)
@@ -174,10 +142,13 @@ const Gallery = () => {
         if (e.key === "ArrowLeft") onPrevious();
         if (e.key === "Escape") setSelectedImageIndex(null);
       }
+      if (selectedVideo !== null && e.key === "Escape") {
+        setSelectedVideo(null);
+      }
     };
     window.addEventListener("keydown", handleGlobalKeyDown);
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
-  }, [selectedImageIndex]);
+  }, [selectedImageIndex, selectedVideo]);
 
   // Limpia timers al desmontar
   useEffect(() => {
@@ -270,11 +241,10 @@ const Gallery = () => {
                     className="group relative block overflow-hidden rounded-xl shadow-xl transition-all duration-400 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-accent/40"
                   >
                     <div className="aspect-[3/4] relative">
-                      <img
+                      <BlurImage
                         src={item.src}
+                        thumbnail={(item as any).thumbnail || item.src}
                         alt={item.title || "Foto de galería"}
-                        className="w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.03]"
-                        draggable={false}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent opacity-0 group-hover:opacity-100 data-[peek=true]:opacity-100 transition-opacity duration-300" />
                       {item.title && (
@@ -303,41 +273,53 @@ const Gallery = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videos.map((item, vIndex) => (
-                <div key={item.id} className="animate-fade-in">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedVideo(item.id)}
-                    onTouchStart={() => handleVideoTouch(vIndex)}
-                    data-peek={peekVideoIndex === vIndex}
-                    className="group relative block overflow-hidden rounded-xl shadow-xl transition-all duration-400 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-accent/40"
-                  >
-                    <div className="aspect-[4/3] relative">
-                      <img
-                        src={item.thumbnail}
-                        alt={item.title}
-                        className="w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.03]"
-                        draggable={false}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 data-[peek=true]:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-accent/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 data-[peek=true]:opacity-100 transition-opacity duration-300" />
-                          <PlayCircle
-                            className="w-16 h-16 text-white/90 group-hover:text-white data-[peek=true]:text-white transition-transform duration-300 group-hover:scale-110 data-[peek=true]:scale-110 relative z-10"
-                            strokeWidth={1.5}
-                          />
+              {videos.map((item, vIndex) => {
+                const { primary, fallback } = ytThumbs(item.id);
+                return (
+                  <div key={item.id} className="animate-fade-in">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedVideo(item.id)}
+                      onTouchStart={() => handleVideoTouch(vIndex)}
+                      data-peek={peekVideoIndex === vIndex}
+                      className="group relative block overflow-hidden rounded-xl shadow-xl transition-all duration-400 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-accent/40"
+                    >
+                      <div className="aspect-video relative bg-black">
+                        {/* Miniatura oficial de YouTube con fallback */}
+                        <img
+                          src={primary}
+                          alt={item.title}
+                          ref={(el) => {
+                            if (!el) return;
+                            el.onload = function () {
+                              // Si la imagen es muy pequeña (placeholder gris de YouTube)
+                              if (
+                                el.naturalWidth < 400 ||
+                                el.naturalHeight < 200
+                              ) {
+                                el.src = fallback;
+                              }
+                            };
+                          }}
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src =
+                              fallback;
+                          }}
+                          className="w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.03]"
+                          draggable={false}
+                          loading="lazy"
+                        />
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 data-[peek=true]:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 data-[peek=true]:translate-y-0 data-[peek=true]:opacity-100 transition-all duration-300">
+                          <h3 className="text-white font-serif text-base md:text-lg drop-shadow">
+                            {item.title}
+                          </h3>
                         </div>
                       </div>
-                      <div className="absolute inset-x-0 bottom-0 p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 data-[peek=true]:translate-y-0 data-[peek=true]:opacity-100 transition-all duration-300">
-                        <h3 className="text-white font-serif text-base md:text-lg drop-shadow">
-                          {item.title}
-                        </h3>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              ))}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
@@ -348,20 +330,34 @@ const Gallery = () => {
         open={!!selectedVideo}
         onOpenChange={() => setSelectedVideo(null)}
       >
-        <DialogContent className="max-w-5xl p-0">
-          <div className="aspect-video w-full">
-            <iframe
-              src={
-                selectedVideo
-                  ? `https://www.youtube.com/embed/${selectedVideo}`
-                  : ""
-              }
-              title="Video"
-              frameBorder={0}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              className="w-full h-full"
-            />
+        <DialogContent
+          className="max-w-5xl w-full p-0 bg-black/95 border-none flex items-center justify-center"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <div className="relative w-full max-w-3xl aspect-video flex items-center justify-center">
+            {selectedVideo && (
+              <div className="absolute inset-0 w-full h-full rounded-lg bg-black">
+                <LiteYouTubeEmbed
+                  id={selectedVideo}
+                  title="Video"
+                  noCookie
+                  adNetwork={false}
+                  params="autoplay=1&rel=0&modestbranding=1&playsinline=1"
+                />
+              </div>
+            )}
+            {/* Cerrar */}
+            <DialogClose asChild>
+              <button
+                type="button"
+                aria-label="Cerrar"
+                className="absolute right-3 top-3 z-20 rounded-full bg-black/40 hover:bg-black/60 text-white/90
+                           p-2 backdrop-blur-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
+                style={{ top: "max(0.75rem, env(safe-area-inset-top))" }}
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </DialogClose>
           </div>
         </DialogContent>
       </Dialog>
@@ -373,17 +369,12 @@ const Gallery = () => {
       >
         <DialogContent
           className="max-w-[90vw] max-h-[90vh] w-full h-full p-0 bg-black/95 border-none transition-all duration-300 ease-out animate-fade-zoom"
-          // evita que el focus auto mueva la página; dejamos el foco donde esté
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <style>{`
             @keyframes fadeZoomIn {
               0% { opacity: 0; transform: scale(0.96); }
               100% { opacity: 1; transform: scale(1); }
-            }
-            @keyframes fadeZoomOut {
-              0% { opacity: 1; transform: scale(1); }
-              100% { opacity: 0; transform: scale(0.96); }
             }
             .animate-fade-zoom {
               animation: fadeZoomIn 0.32s cubic-bezier(0.4,0,0.2,1);
@@ -397,16 +388,16 @@ const Gallery = () => {
                   alt={images[selectedImageIndex].title || "Foto de galería"}
                   className="h-[85vh] w-auto object-contain rounded-lg select-none transition-all duration-300 ease-out animate-fade-zoom"
                   draggable={false}
+                  loading="lazy"
                 />
 
-                {/* Cerrar (DialogClose) — grande, claro, con safe-area */}
+                {/* Cerrar (DialogClose) */}
                 <DialogClose asChild>
                   <button
                     type="button"
                     aria-label="Cerrar"
                     className="absolute right-4 top-4 z-20 rounded-full bg-black/40 hover:bg-black/60 text-white/90
                                p-2.5 backdrop-blur-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
-                    // top seguro para notch
                     style={{ top: "max(1rem, env(safe-area-inset-top))" }}
                   >
                     <X className="h-6 w-6" />

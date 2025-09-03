@@ -15,7 +15,8 @@ import lasOrquestas from "@/assets/varios/las-orquestas.jpeg";
 type PressItem =
   | {
       type: "article";
-      title: string;
+      editorial: string; // Editorial o medio
+      headline: string; // Encabezado o título principal
       url: string;
       description: string;
       image: string;
@@ -34,14 +35,16 @@ const Press = () => {
 
   const pressItems: PressItem[] = [
     {
-      title: "La Jornada - Cultura",
+      editorial: "La Jornada",
+      headline: "Cultura",
       url: "https://www.jornada.com.mx/2025/07/20/cultura/a05n1cul",
       description: "Artículo destacado en La Jornada",
       type: "article",
       image: tangoOleo,
     },
     {
-      title: "El Universal - Detrás de mí, de mujeres y tangos",
+      editorial: "El Universal",
+      headline: "Detrás de mí, de mujeres y tangos",
       url: "https://www.eluniversal.com.mx/cultura/detras-de-mi-de-mujeres-y-tangos-en-busca-de-la-naturaleza-femenina/?utm_source=web",
       description: "En busca de la naturaleza femenina",
       type: "article",
@@ -56,9 +59,10 @@ const Press = () => {
       thumbnail: malenaBaila,
     },
     {
-      title: "La Voz de Michoacán",
+      editorial: "La Voz de Michoacán",
+      headline: "Valeria Vega y la danza como un pez en el agua",
       url: "https://www.lavozdemichoacan.com.mx/cultura/jueves/entrevista-valeria-vega-y-la-danza-como-un-pez-en-el-agua/",
-      description: "Valeria Vega y la danza como un pez en el agua",
+      description: "Entrevista a Valeria Vega",
       type: "article",
       image: notasDelTango,
     },
@@ -71,21 +75,24 @@ const Press = () => {
       thumbnail: ioTango,
     },
     {
-      title: "Puerta Escénica - La Dama del Puerto",
+      editorial: "Puerta Escénica",
+      headline: "La Dama del Puerto",
       url: "https://puertaescenica.com/la-dama-del-puerto-el-tango-que-da-voz-a-las-emociones-humanas/",
       description: "El tango que da voz a las emociones humanas",
       type: "article",
       image: damaDelPuerto,
     },
     {
-      title: "Puerta Escénica - Detrás de mí",
+      editorial: "Puerta Escénica",
+      headline: "Detrás de mí de mujeres y tangos",
       url: "https://puertaescenica.com/?s=Detr%C3%A1s+de+mi+de+mujeres+y+tangos",
       description: "Artículo sobre 'Detrás de mí de mujeres y tangos'",
       type: "article",
       image: detrasDeMi,
     },
     {
-      title: "Mi Morelia - Rebozo",
+      editorial: "Mi Morelia",
+      headline: "Rebozo",
       url: "https://mimorelia.com/noticias/morelia/con-rebozo-valeria-vega-reflexiona-acerca-de-la-vida",
       description:
         "Reflexión acerca de la vida a través del espectáculo Rebozo",
@@ -93,7 +100,8 @@ const Press = () => {
       image: rebozo,
     },
     {
-      title: "Cambio de Michoacán - Rebozo",
+      editorial: "Cambio de Michoacán",
+      headline: "Rebozo: una vida de danza",
       url: "https://cambiodemichoacan.com.mx/2024/04/10/rebozo-una-vida-de-danza/",
       description: "Una vida de danza",
       type: "article",
@@ -108,7 +116,8 @@ const Press = () => {
       thumbnail: queQuilombo,
     },
     {
-      title: "Excélsior - Festival de Música de Morelia",
+      editorial: "Excélsior",
+      headline: "Festival de Música de Morelia",
       url: "https://www.excelsior.com.mx/expresiones/la-musica-se-une-en-el-33-festival-de-musica-de-morelia/1475664",
       description: "La música se une en el 33 Festival de Música de Morelia",
       type: "article",
@@ -154,7 +163,14 @@ const Press = () => {
             const aspect = aspectClass(video ? "video" : "article");
 
             return (
-              <div key={item.title} className={span}>
+              <div
+                key={
+                  item.type === "article"
+                    ? (item as any).headline
+                    : (item as any).title
+                }
+                className={span}
+              >
                 <div
                   className="group relative overflow-hidden rounded-2xl bg-card/25 backdrop-blur-sm border border-border/30 shadow-sm
                              transition-all duration-300 hover:shadow-md hover:-translate-y-[1px]
@@ -166,7 +182,11 @@ const Press = () => {
                       src={
                         video ? (item as any).thumbnail : (item as any).image
                       }
-                      alt={item.title}
+                      alt={
+                        item.type === "article"
+                          ? (item as any).headline
+                          : (item as any).title
+                      }
                       className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.015]"
                       loading="lazy"
                       decoding="async"
@@ -208,9 +228,20 @@ const Press = () => {
                       className="rounded-xl bg-background/85 backdrop-blur-md border border-border/30 shadow-sm
                                     p-4 transition-shadow duration-300 group-hover:shadow-md"
                     >
-                      <h3 className="text-base md:text-lg font-serif font-light text-primary leading-snug [text-wrap:balance] break-words">
-                        {item.title}
-                      </h3>
+                      {item.type === "article" ? (
+                        <>
+                          <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
+                            {(item as any).editorial}
+                          </span>
+                          <h3 className="text-lg md:text-xl font-bold text-primary mt-1 mb-1 leading-snug">
+                            {(item as any).headline}
+                          </h3>
+                        </>
+                      ) : (
+                        <h3 className="text-base md:text-lg font-serif font-light text-primary leading-snug [text-wrap:balance] break-words">
+                          {item.title}
+                        </h3>
+                      )}
                       <p className="mt-1.5 text-[13px] md:text-sm text-muted-foreground font-light leading-relaxed">
                         {item.description}
                       </p>
