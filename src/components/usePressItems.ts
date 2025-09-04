@@ -70,7 +70,7 @@ const pressItems: PressItem[] = [
   {
     editorial: "Puerta Escénica",
     headline: "Detrás de mí de mujeres y tangos",
-    url: "https://puertaescenica.com/?s=Detr%C3%A1s+de+mi+de+mujeres+y+tangos",
+    url: "https://puertaescenica.com/una-mirada-a-historias-de-mujeres-y-hombresdetras-de-mi-de-mujeres-y-tangos/",
     description: "Artículo sobre 'Detrás de mí de mujeres y tangos'",
     type: "article",
     image: "",
@@ -79,8 +79,7 @@ const pressItems: PressItem[] = [
     editorial: "Mi Morelia",
     headline: "Rebozo",
     url: "https://mimorelia.com/noticias/morelia/con-rebozo-valeria-vega-reflexiona-acerca-de-la-vida",
-    description:
-      "Reflexión acerca de la vida a través del espectáculo Rebozo",
+    description: "Reflexión acerca de la vida a través del espectáculo Rebozo",
     type: "article",
     image: "",
   },
@@ -128,26 +127,32 @@ export function usePressItems() {
     }
     const fetchArticleData = async (url: string) => {
       try {
-        if (url.includes('youtube.com') || url.includes('youtu.be')) {
-          const videoId = url.includes('youtu.be/') 
-            ? url.split('youtu.be/')[1].split('?')[0]
-            : url.split('v=')[1].split('&')[0];
+        if (url.includes("youtube.com") || url.includes("youtu.be")) {
+          const videoId = url.includes("youtu.be/")
+            ? url.split("youtu.be/")[1].split("?")[0]
+            : url.split("v=")[1].split("&")[0];
           return {
             image: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
             title: null,
-            description: null
+            description: null,
           };
         }
-        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+        const response = await fetch(
+          `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`
+        );
         const data = await response.json();
         const html = data.contents;
         const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        let imagePath = 
-          doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
-          doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content') ||
-          doc.querySelector('.article-image img')?.getAttribute('src') ||
-          doc.querySelector('article img')?.getAttribute('src');
+        const doc = parser.parseFromString(html, "text/html");
+        let imagePath =
+          doc
+            .querySelector('meta[property="og:image"]')
+            ?.getAttribute("content") ||
+          doc
+            .querySelector('meta[name="twitter:image"]')
+            ?.getAttribute("content") ||
+          doc.querySelector(".article-image img")?.getAttribute("src") ||
+          doc.querySelector("article img")?.getAttribute("src");
         let ogImage = null;
         if (imagePath) {
           try {
@@ -157,54 +162,69 @@ export function usePressItems() {
               ogImage = null;
             }
           } catch (error) {
-            console.error('Invalid image URL:', imagePath);
+            console.error("Invalid image URL:", imagePath);
           }
         }
-        const ogTitle = 
-          doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
-          doc.querySelector('meta[name="twitter:title"]')?.getAttribute('content');
-        const ogDescription = 
-          doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
-          doc.querySelector('meta[name="twitter:description"]')?.getAttribute('content') ||
-          doc.querySelector('meta[name="description"]')?.getAttribute('content');
-        const article = 
-          doc.querySelector('article') || 
-          doc.querySelector('.article-content') || 
-          doc.querySelector('.entry-content') || 
-          doc.querySelector('.post-content') || 
-          doc.querySelector('main');
+        const ogTitle =
+          doc
+            .querySelector('meta[property="og:title"]')
+            ?.getAttribute("content") ||
+          doc
+            .querySelector('meta[name="twitter:title"]')
+            ?.getAttribute("content");
+        const ogDescription =
+          doc
+            .querySelector('meta[property="og:description"]')
+            ?.getAttribute("content") ||
+          doc
+            .querySelector('meta[name="twitter:description"]')
+            ?.getAttribute("content") ||
+          doc
+            .querySelector('meta[name="description"]')
+            ?.getAttribute("content");
+        const article =
+          doc.querySelector("article") ||
+          doc.querySelector(".article-content") ||
+          doc.querySelector(".entry-content") ||
+          doc.querySelector(".post-content") ||
+          doc.querySelector("main");
         let title = ogTitle;
         let description = ogDescription;
         if (article) {
           if (!title) {
-            const h1 = article.querySelector('h1');
+            const h1 = article.querySelector("h1");
             title = h1?.textContent?.trim();
           }
           if (!description) {
-            const paragraphs = Array.from(article.querySelectorAll('p'))
-              .filter(p => {
-                const text = p.textContent?.trim() || '';
-                return text.length > 50 && !text.includes('©') && !text.includes('Derechos reservados');
+            const paragraphs = Array.from(article.querySelectorAll("p"))
+              .filter((p) => {
+                const text = p.textContent?.trim() || "";
+                return (
+                  text.length > 50 &&
+                  !text.includes("©") &&
+                  !text.includes("Derechos reservados")
+                );
               })
               .slice(0, 2);
             if (paragraphs.length > 0) {
-              description = paragraphs
-                .map(p => p.textContent?.trim())
-                .join(' ')
-                .substring(0, 200)
-                .split(' ')
-                .slice(0, -1)
-                .join(' ') + '...';
+              description =
+                paragraphs
+                  .map((p) => p.textContent?.trim())
+                  .join(" ")
+                  .substring(0, 200)
+                  .split(" ")
+                  .slice(0, -1)
+                  .join(" ") + "...";
             }
           }
         }
         return {
           image: ogImage,
           title: title,
-          description: description
+          description: description,
         };
       } catch (error) {
-        console.error('Error fetching article data:', error);
+        console.error("Error fetching article data:", error);
         return null;
       }
     };
@@ -212,42 +232,49 @@ export function usePressItems() {
       setIsLoading(true);
       try {
         const loadedItems = await Promise.all(
-        pressItems.map(async (item) => {
-          const data = await fetchArticleData(item.url);
-          const defaultImage = "https://source.unsplash.com/random/800x600?newspaper,article";
-          if (data) {
-            if (item.type === 'article') {
+          pressItems.map(async (item) => {
+            const data = await fetchArticleData(item.url);
+            const defaultImage =
+              "https://source.unsplash.com/random/800x600?newspaper,article";
+            if (data) {
+              if (item.type === "article") {
+                return {
+                  ...item,
+                  headline: data.title || item.headline,
+                  image:
+                    data.image && data.image.match(/^https?:\/\//)
+                      ? data.image
+                      : defaultImage,
+                  description: data.description || item.description,
+                };
+              } else if (item.type === "video") {
+                return {
+                  ...item,
+                  thumbnail:
+                    data.image && data.image.match(/^https?:\/\//)
+                      ? data.image
+                      : defaultImage,
+                };
+              }
+            }
+            if (item.type === "article") {
               return {
                 ...item,
-                headline: data.title || item.headline,
-                image: data.image && data.image.match(/^https?:\/\//) ? data.image : defaultImage,
-                description: data.description || item.description
+                image: defaultImage,
               };
-            } else if (item.type === 'video') {
+            } else {
               return {
                 ...item,
-                thumbnail: data.image && data.image.match(/^https?:\/\//) ? data.image : defaultImage
+                thumbnail: defaultImage,
               };
             }
-          }
-          if (item.type === 'article') {
-            return {
-              ...item,
-              image: defaultImage
-            };
-          } else {
-            return {
-              ...item,
-              thumbnail: defaultImage
-            };
-          }
-        })
-      );
-      setLoadedPressItems(loadedItems);
-      // Guardar en localStorage para futuras cargas rápidas
-      localStorage.setItem("pressItemsCache", JSON.stringify(loadedItems));
+          })
+        );
+        setLoadedPressItems(loadedItems);
+        // Guardar en localStorage para futuras cargas rápidas
+        localStorage.setItem("pressItemsCache", JSON.stringify(loadedItems));
       } catch (error) {
-        console.error('Error loading articles:', error);
+        console.error("Error loading articles:", error);
       } finally {
         setIsLoading(false);
       }

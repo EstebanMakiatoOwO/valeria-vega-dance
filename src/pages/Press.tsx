@@ -1,30 +1,84 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { PlayCircle } from "lucide-react";
 import { usePressItems } from "../components/usePressItems";
+
+// --- Utils ---
+const extractYouTubeId = (input: string): string => {
+  // ya es ID (11-12+ chars alfanum con _ -)
+  if (/^[\w-]{10,}$/.test(input)) return input;
+
+  try {
+    const url = new URL(input);
+    const host = url.hostname.replace(/^www\./, "");
+    if (host === "youtu.be") {
+      return url.pathname.slice(1);
+    }
+    if (host.includes("youtube.com")) {
+      // /watch?v=ID
+      const v = url.searchParams.get("v");
+      if (v) return v;
+      // /shorts/ID, /embed/ID, /v/ID
+      const parts = url.pathname.split("/").filter(Boolean);
+      const idx = parts.findIndex((p) =>
+        ["shorts", "embed", "v"].includes(p.toLowerCase())
+      );
+      if (idx >= 0 && parts[idx + 1]) return parts[idx + 1];
+    }
+  } catch {
+    // ignore
+  }
+  return input;
+};
+
+const ytThumbs = (id: string) => ({
+  primary: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
+  fallback: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+});
+
+// Placeholder muy ligero (gris) para artículos sin imagen
+const PLACEHOLDER =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'>
+      <rect width='100%' height='100%' fill='#1f2937'/>
+      <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#9ca3af' font-family='system-ui, -apple-system, Segoe UI, Roboto' font-size='42'>Prensa</text>
+    </svg>`
+  );
+
+// --- Layout helpers ---
+type PressType = "article" | "video";
+const spanClass = (i: number) => {
+  const pattern = [
+    "md:col-span-3 lg:col-span-4",
+    "md:col-span-3 lg:col-span-5",
+    "md:col-span-6 lg:col-span-6",
+    "md:col-span-3 lg:col-span-4",
+    "md:col-span-3 lg:col-span-5",
+    "md:col-span-6 lg:col-span-6",
+  ];
+  return pattern[i % pattern.length];
+};
+const aspectClass = (t: PressType) =>
+  t === "video"
+    ? "aspect-[16/9] md:aspect-[3/2]"
+    : "aspect-[4/3] md:aspect-[3/2]";
+
+// Tamaños responsivos para <img>
+const IMG_SIZES = "(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw";
 
 const Press = () => {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const { loadedPressItems, isLoading, pressItems } = usePressItems();
 
-  // Patrón de spans compacto (12 cols en lg): sin full-width, variedad pero discreta
-  const spanClass = (i: number) => {
-    const pattern = [
-      "md:col-span-3 lg:col-span-4", // compacto
-      "md:col-span-3 lg:col-span-5", // un poco más ancho
-      "md:col-span-6 lg:col-span-6", // medio (media fila)
-      "md:col-span-3 lg:col-span-4",
-      "md:col-span-3 lg:col-span-5",
-      "md:col-span-6 lg:col-span-6",
-    ];
-    return pattern[i % pattern.length];
-  };
+  const items = useMemo(
+    () => (loadedPressItems.length > 0 ? loadedPressItems : pressItems),
+    [loadedPressItems, pressItems]
+  );
 
-  // Aspect ratios moderados (más anchos que altos, pero no extremos)
-  const aspectClass = (t: "article" | "video") =>
-    t === "video"
-      ? "aspect-[16/9] md:aspect-[3/2]"
-      : "aspect-[4/3] md:aspect-[3/2]";
+  const openVideo = useCallback((idOrUrl: string) => {
+    setSelectedVideo(extractYouTubeId(idOrUrl));
+  }, []);
 
   return (
     <div className="min-h-screen bg-background pt-20">
@@ -37,157 +91,172 @@ const Press = () => {
           <div className="w-24 h-px bg-cultural ml-auto mr-0 opacity-60" />
         </div>
 
-        {/* Loading state */}
+        {/* Loading */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
           </div>
         ) : (
-        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-x-6 gap-y-10">
-          {(loadedPressItems.length > 0 ? loadedPressItems : pressItems).map((item, i) => {
-            const video = item.type === "video";
-            const span = spanClass(i);
-            const aspect = aspectClass(video ? "video" : "article");
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-x-6 gap-y-10">
+            {items.map((item: any, i: number) => {
+              const isVideo = item.type === "video";
+              const span = spanClass(i);
+              const aspect = aspectClass(isVideo ? "video" : "article");
 
-            return (
-              <div
-                key={
-                  item.type === "article"
-                    ? (item as any).headline
-                    : (item as any).title
-                }
-                className={span}
-              >
+              // Imagen fuente optimizada
+              let imgSrc = "";
+              let alt = "";
+              if (isVideo) {
+                const id = extractYouTubeId(item.videoId ?? item.url ?? "");
+                const { primary, fallback } = ytThumbs(id);
+                imgSrc = primary;
+                alt = item.title || "Video";
+                // onError -> fallback hqdefault
+                // onLoad -> si maxres es placeholder pequeño, también cambiamos a hq
+              } else {
+                imgSrc = item.image || PLACEHOLDER;
+                alt = item.headline || item.title || "Artículo";
+              }
+
+              return (
                 <div
-                  className="group relative overflow-hidden rounded-2xl bg-card/25 backdrop-blur-sm border border-border/30 shadow-sm
-                             transition-all duration-300 hover:shadow-md hover:-translate-y-[1px]
-                             [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
+                  key={`${item.type}-${item.url ?? item.title}-${i}`}
+                  className={`${span} [content-visibility:auto] [contain-intrinsic-size:400px_300px]`}
                 >
-                  {/* Media */}
-                  <div className={`${aspect} relative`}>
-                    <img
-                      src={
-                        video ? (item as any).thumbnail : (item as any).image
-                      }
-                      alt={
-                        item.type === "article"
-                          ? (item as any).headline
-                          : (item as any).title
-                      }
-                      className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.015]"
-                      loading="lazy"
-                      decoding="async"
-                      onError={(e) => {
-                        // Si la imagen falla, usar una imagen de respaldo de unsplash
-                        const target = e.target as HTMLImageElement;
-                        target.src = `https://source.unsplash.com/random/800x600?${
-                          video ? 'video,play' : 'newspaper,article'
-                        }`;
-                      }}
-                    />
+                  <div
+                    className="group relative overflow-hidden rounded-2xl bg-card/25 backdrop-blur-sm border border-border/30 shadow-sm
+                               transition-all duration-300 hover:shadow-md hover:-translate-y-[1px]
+                               [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
+                  >
+                    {/* Media */}
+                    <div className={`${aspect} relative`}>
+                      <img
+                        src={imgSrc}
+                        alt={alt}
+                        className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-400 group-hover:scale-[1.015]"
+                        loading="lazy"
+                        decoding="async"
+                        sizes={IMG_SIZES}
+                        onLoad={(e) => {
+                          if (!isVideo) return;
+                          const el = e.currentTarget as HTMLImageElement;
+                          // si maxres es un placeholder pequeño, caer a hq
+                          if (el.naturalWidth < 400 || el.naturalHeight < 200) {
+                            const id = extractYouTubeId(
+                              item.videoId ?? item.url ?? ""
+                            );
+                            el.src = ytThumbs(id).fallback;
+                          }
+                        }}
+                        onError={(e) => {
+                          const el = e.currentTarget as HTMLImageElement;
+                          if (isVideo) {
+                            const id = extractYouTubeId(
+                              item.videoId ?? item.url ?? ""
+                            );
+                            el.src = ytThumbs(id).fallback;
+                          } else {
+                            el.src = PLACEHOLDER;
+                          }
+                        }}
+                      />
 
-                    {/* Badge */}
-                    <div className="absolute top-2.5 left-2.5 z-10">
-                      <span
-                        className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] tracking-wide
-                                        bg-black/55 text-white border border-white/10 backdrop-blur-sm"
-                      >
-                        {video ? "Video" : "Artículo"}
-                      </span>
+                      {/* Badge */}
+                      <div className="absolute top-2.5 left-2.5 z-10">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] tracking-wide bg-black/55 text-white border border-white/10 backdrop-blur-sm">
+                          {isVideo ? "Video" : "Artículo"}
+                        </span>
+                      </div>
+
+                      {/* Overlay */}
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                      {/* Play para video */}
+                      {isVideo && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="relative pointer-events-none">
+                            <div className="absolute inset-0 rounded-full blur-xl bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <PlayCircle
+                              className="w-12 h-12 text-white/90 group-hover:text-white transition-transform duration-300 group-hover:scale-110 relative z-10"
+                              strokeWidth={1.4}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Overlay sutil */}
-                    <div
-                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent
-                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    />
+                    {/* Preview / Texto */}
+                    <div className="px-4 -mt-5">
+                      <div className="rounded-xl bg-background/85 backdrop-blur-md border border-border/30 shadow-sm p-4 transition-shadow duration-300 group-hover:shadow-md">
+                        {item.type === "article" ? (
+                          <>
+                            {item.editorial && (
+                              <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
+                                {item.editorial}
+                              </span>
+                            )}
+                            <h3 className="text-lg md:text-xl font-bold text-primary mt-1 mb-1 leading-snug [text-wrap:balance]">
+                              {item.headline || item.title}
+                            </h3>
+                          </>
+                        ) : (
+                          <h3 className="text-base md:text-lg font-serif font-light text-primary leading-snug [text-wrap:balance] break-words">
+                            {item.title}
+                          </h3>
+                        )}
 
-                    {/* Play en videos */}
-                    {video && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="relative pointer-events-none">
-                          <div className="absolute inset-0 rounded-full blur-xl bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          <PlayCircle
-                            className="w-12 h-12 text-white/90 group-hover:text-white transition-transform duration-300 group-hover:scale-110 relative z-10"
-                            strokeWidth={1.4}
-                          />
+                        {item.description && (
+                          <p className="mt-1.5 text-[13px] md:text-sm text-muted-foreground font-light leading-relaxed">
+                            {item.description}
+                          </p>
+                        )}
+
+                        {/* CTA */}
+                        <div className="mt-3 flex">
+                          {isVideo ? (
+                            <button
+                              onClick={() =>
+                                openVideo(item.videoId ?? item.url ?? "")
+                              }
+                              className="ml-auto inline-flex items-center gap-2 rounded-full border border-accent/30 px-3 py-1 text-xs md:text-sm text-accent hover:bg-accent/10 transition-colors"
+                              aria-label="Ver video"
+                            >
+                              Ver video
+                            </button>
+                          ) : (
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="ml-auto inline-flex items-center gap-2 rounded-full border border-accent/30 px-3 py-1 text-xs md:text-sm text-accent hover:bg-accent/10 transition-colors"
+                              aria-label="Leer artículo"
+                            >
+                              Leer artículo
+                            </a>
+                          )}
                         </div>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Preview box compacto */}
-                  <div className="px-4 -mt-5">
-                    <div
-                      className="rounded-xl bg-background/85 backdrop-blur-md border border-border/30 shadow-sm
-                                    p-4 transition-shadow duration-300 group-hover:shadow-md"
-                    >
-                      {item.type === "article" ? (
-                        <>
-                          <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
-                            {(item as any).editorial}
-                          </span>
-                          <h3 className="text-lg md:text-xl font-bold text-primary mt-1 mb-1 leading-snug">
-                            {(item as any).headline}
-                          </h3>
-                        </>
-                      ) : (
-                        <h3 className="text-base md:text-lg font-serif font-light text-primary leading-snug [text-wrap:balance] break-words">
-                          {item.title}
-                        </h3>
-                      )}
-                      <p className="mt-1.5 text-[13px] md:text-sm text-muted-foreground font-light leading-relaxed">
-                        {item.description}
-                      </p>
-
-                      {/* CTA */}
-                      <div className="mt-3 flex">
-                        {video ? (
-                          <button
-                            onClick={() =>
-                              setSelectedVideo((item as any).videoId)
-                            }
-                            className="ml-auto inline-flex items-center gap-2 rounded-full border border-accent/30 px-3 py-1 text-xs md:text-sm
-                                       text-accent hover:bg-accent/10 transition-colors"
-                            aria-label="Ver video"
-                          >
-                            Ver video
-                          </button>
-                        ) : (
-                          <a
-                            href={(item as any).url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ml-auto inline-flex items-center gap-2 rounded-full border border-accent/30 px-3 py-1 text-xs md:text-sm
-                                       text-accent hover:bg-accent/10 transition-colors"
-                            aria-label="Leer artículo"
-                          >
-                            Leer artículo
-                          </a>
-                        )}
-                      </div>
                     </div>
-                  </div>
 
-                  {/* Click sobre toda la tarjeta */}
-                  <a
-                    href={video ? undefined : (item as any).url}
-                    target={video ? undefined : "_blank"}
-                    rel={video ? undefined : "noopener noreferrer"}
-                    onClick={(e) => {
-                      if (video) {
-                        e.preventDefault();
-                        setSelectedVideo((item as any).videoId);
-                      }
-                    }}
-                    className="absolute inset-0"
-                    aria-hidden="true"
-                  />
+                    {/* Click toda la tarjeta */}
+                    <a
+                      href={isVideo ? undefined : item.url}
+                      target={isVideo ? undefined : "_blank"}
+                      rel={isVideo ? undefined : "noopener noreferrer"}
+                      onClick={(e) => {
+                        if (isVideo) {
+                          e.preventDefault();
+                          openVideo(item.videoId ?? item.url ?? "");
+                        }
+                      }}
+                      className="absolute inset-0"
+                      aria-hidden="true"
+                    />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
         )}
       </div>
 
@@ -199,7 +268,11 @@ const Press = () => {
         <DialogContent className="max-w-5xl p-0">
           <div className="aspect-video w-full">
             <iframe
-              src={selectedVideo ? `https://www.youtube.com/embed/${selectedVideo}` : ""}
+              src={
+                selectedVideo
+                  ? `https://www.youtube-nocookie.com/embed/${selectedVideo}?autoplay=1&rel=0&modestbranding=1&playsinline=1`
+                  : ""
+              }
               title="Video"
               frameBorder={0}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
