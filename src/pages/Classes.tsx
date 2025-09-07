@@ -1,7 +1,7 @@
 // Import dance class images
-import tangoImage from "../assets/clases/tango-class.jpg";
+import tangoImage from "../assets/clases/clase-tango-vale.jpeg";
 import parejasColoresImage from "../assets/shows/colores/parejas_colores.jpg";
-import musicalImage from "../assets/clases/musical-theater-class.jpg";
+import musicalImage from "../assets/clases/latinos.jpeg";
 import moovLogo from "../assets/clases/moov-studio.png";
 import cuerposPoster from "../assets/clases/cuerpos-bilingues.png"; // Usar un poster de cuerpos bilingües
 import { MapPin, Phone, ExternalLink } from "lucide-react";
@@ -190,12 +190,15 @@ const Classes = () => {
                     <div className="relative">
                       <div className="md:flex">
                         {/* Image section */}
-                        <div className="md:w-2/5 relative overflow-hidden">
-                          <img
-                            src={classItem.image}
-                            alt={classItem.title}
-                            className="w-full h-64 md:h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          />
+                        <div className="md:w-2/5 flex items-center justify-center overflow-hidden rounded-2xl">
+                          {" "}
+                          <div className="w-full h-[32rem] md:h-[38rem] flex items-center justify-center">
+                            <img
+                              src={classItem.image}
+                              alt={classItem.title}
+                              className="w-full h-full object-contain rounded-2xl border-4 border-transparent transition-transform duration-700 group-hover:scale-110"
+                            />
+                          </div>
                           <div
                             className={`absolute inset-0 bg-gradient-to-r ${classItem.gradient} opacity-30 group-hover:opacity-50 transition-opacity duration-500`}
                           ></div>

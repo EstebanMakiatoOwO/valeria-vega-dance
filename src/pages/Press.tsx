@@ -5,29 +5,21 @@ import { usePressItems } from "../components/usePressItems";
 
 // --- Utils ---
 const extractYouTubeId = (input: string): string => {
-  // ya es ID (11-12+ chars alfanum con _ -)
   if (/^[\w-]{10,}$/.test(input)) return input;
-
   try {
     const url = new URL(input);
     const host = url.hostname.replace(/^www\./, "");
-    if (host === "youtu.be") {
-      return url.pathname.slice(1);
-    }
+    if (host === "youtu.be") return url.pathname.slice(1);
     if (host.includes("youtube.com")) {
-      // /watch?v=ID
       const v = url.searchParams.get("v");
       if (v) return v;
-      // /shorts/ID, /embed/ID, /v/ID
       const parts = url.pathname.split("/").filter(Boolean);
       const idx = parts.findIndex((p) =>
         ["shorts", "embed", "v"].includes(p.toLowerCase())
       );
       if (idx >= 0 && parts[idx + 1]) return parts[idx + 1];
     }
-  } catch {
-    // ignore
-  }
+  } catch {}
   return input;
 };
 
@@ -36,7 +28,6 @@ const ytThumbs = (id: string) => ({
   fallback: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
 });
 
-// Placeholder muy ligero (gris) para artículos sin imagen
 const PLACEHOLDER =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
@@ -64,7 +55,6 @@ const aspectClass = (t: PressType) =>
     ? "aspect-[16/9] md:aspect-[3/2]"
     : "aspect-[4/3] md:aspect-[3/2]";
 
-// Tamaños responsivos para <img>
 const IMG_SIZES = "(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw";
 
 const Press = () => {
@@ -103,16 +93,14 @@ const Press = () => {
               const span = spanClass(i);
               const aspect = aspectClass(isVideo ? "video" : "article");
 
-              // Imagen fuente optimizada
+              // Imagen fuente
               let imgSrc = "";
               let alt = "";
               if (isVideo) {
                 const id = extractYouTubeId(item.videoId ?? item.url ?? "");
-                const { primary, fallback } = ytThumbs(id);
+                const { primary } = ytThumbs(id);
                 imgSrc = primary;
                 alt = item.title || "Video";
-                // onError -> fallback hqdefault
-                // onLoad -> si maxres es placeholder pequeño, también cambiamos a hq
               } else {
                 imgSrc = item.image || PLACEHOLDER;
                 alt = item.headline || item.title || "Artículo";
@@ -137,24 +125,13 @@ const Press = () => {
                         loading="lazy"
                         decoding="async"
                         sizes={IMG_SIZES}
-                        onLoad={(e) => {
-                          if (!isVideo) return;
-                          const el = e.currentTarget as HTMLImageElement;
-                          // si maxres es un placeholder pequeño, caer a hq
-                          if (el.naturalWidth < 400 || el.naturalHeight < 200) {
-                            const id = extractYouTubeId(
-                              item.videoId ?? item.url ?? ""
-                            );
-                            el.src = ytThumbs(id).fallback;
-                          }
-                        }}
                         onError={(e) => {
                           const el = e.currentTarget as HTMLImageElement;
                           if (isVideo) {
                             const id = extractYouTubeId(
                               item.videoId ?? item.url ?? ""
                             );
-                            el.src = ytThumbs(id).fallback;
+                            el.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
                           } else {
                             el.src = PLACEHOLDER;
                           }
@@ -190,12 +167,20 @@ const Press = () => {
                       <div className="rounded-xl bg-background/85 backdrop-blur-md border border-border/30 shadow-sm p-4 transition-shadow duration-300 group-hover:shadow-md">
                         {item.type === "article" ? (
                           <>
+                            {/* Editorial más grande y atractiva */}
                             {item.editorial && (
-                              <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
-                                {item.editorial}
-                              </span>
+                              <div className="mb-1.5">
+                                <span
+                                  className="inline-block rounded-lg border border-accent/30 bg-accent/5 px-2.5 py-1
+                                             text-sm md:text-base font-semibold tracking-wide text-accent"
+                                >
+                                  {item.editorial}
+                                </span>
+                              </div>
                             )}
-                            <h3 className="text-lg md:text-xl font-bold text-primary mt-1 mb-1 leading-snug [text-wrap:balance]">
+
+                            {/* Headline */}
+                            <h3 className="text-xl md:text-2xl font-serif font-semibold text-primary leading-snug [text-wrap:balance]">
                               {item.headline || item.title}
                             </h3>
                           </>
@@ -205,9 +190,10 @@ const Press = () => {
                           </h3>
                         )}
 
-                        {item.description && (
-                          <p className="mt-1.5 text-[13px] md:text-sm text-muted-foreground font-light leading-relaxed">
-                            {item.description}
+                        {/* Descripción (usa la larga si existe) */}
+                        {(item.descriptionLong || item.description) && (
+                          <p className="mt-2 text-sm md:text-[15px] text-muted-foreground/90 leading-relaxed">
+                            {item.descriptionLong || item.description}
                           </p>
                         )}
 

@@ -7,7 +7,9 @@ export type PressItem =
       headline: string;
       url: string;
       description: string;
+      descriptionLong?: string;
       image: string;
+      title?: string; // fallback si no hay headline
     }
   | {
       type: "video";
@@ -17,6 +19,15 @@ export type PressItem =
       thumbnail: string;
       videoId: string;
     };
+
+const PLACEHOLDER =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'>
+      <rect width='100%' height='100%' fill='#1f2937'/>
+      <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#9ca3af' font-family='system-ui, -apple-system, Segoe UI, Roboto' font-size='42'>Prensa</text>
+    </svg>`
+  );
 
 const pressItems: PressItem[] = [
   {
@@ -114,7 +125,6 @@ export function usePressItems() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Intentar cargar desde localStorage primero
     const cached = localStorage.getItem("pressItemsCache");
     if (cached) {
       try {
@@ -125,25 +135,34 @@ export function usePressItems() {
         }
       } catch {}
     }
+
     const fetchArticleData = async (url: string) => {
       try {
+        // YouTube: resolvemos miniatura y listo
         if (url.includes("youtube.com") || url.includes("youtu.be")) {
           const videoId = url.includes("youtu.be/")
             ? url.split("youtu.be/")[1].split("?")[0]
-            : url.split("v=")[1].split("&")[0];
+            : url.split("v=")[1]?.split("&")[0];
           return {
-            image: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+            image: videoId
+              ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
+              : null,
             title: null,
             description: null,
+            descriptionLong: null,
           };
         }
+
         const response = await fetch(
           `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`
         );
         const data = await response.json();
-        const html = data.contents;
+        const html = data.contents as string;
+
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
+
+        // Imagen OG
         let imagePath =
           doc
             .querySelector('meta[property="og:image"]')
@@ -153,18 +172,17 @@ export function usePressItems() {
             ?.getAttribute("content") ||
           doc.querySelector(".article-image img")?.getAttribute("src") ||
           doc.querySelector("article img")?.getAttribute("src");
-        let ogImage = null;
+
+        let resolvedImage: string | null = null;
         if (imagePath) {
           try {
             imagePath = imagePath.trim();
-            ogImage = new URL(imagePath, url).href;
-            if (!ogImage.match(/^https?:\/\//)) {
-              ogImage = null;
-            }
-          } catch (error) {
-            console.error("Invalid image URL:", imagePath);
-          }
+            const abs = new URL(imagePath, url).href;
+            if (/^https?:\/\//.test(abs)) resolvedImage = abs;
+          } catch {}
         }
+
+        // Título
         const ogTitle =
           doc
             .querySelector('meta[property="og:title"]')
@@ -172,6 +190,8 @@ export function usePressItems() {
           doc
             .querySelector('meta[name="twitter:title"]')
             ?.getAttribute("content");
+
+        // Descripciones
         const ogDescription =
           doc
             .querySelector('meta[property="og:description"]')
@@ -182,96 +202,99 @@ export function usePressItems() {
           doc
             .querySelector('meta[name="description"]')
             ?.getAttribute("content");
+
         const article =
           doc.querySelector("article") ||
           doc.querySelector(".article-content") ||
           doc.querySelector(".entry-content") ||
           doc.querySelector(".post-content") ||
           doc.querySelector("main");
-        let title = ogTitle;
-        let description = ogDescription;
+
+        let title = ogTitle || undefined;
+        let short = ogDescription || undefined;
+        let long: string | undefined;
+
         if (article) {
           if (!title) {
             const h1 = article.querySelector("h1");
-            title = h1?.textContent?.trim();
+            title = h1?.textContent?.trim() || undefined;
           }
-          if (!description) {
-            const paragraphs = Array.from(article.querySelectorAll("p"))
-              .filter((p) => {
-                const text = p.textContent?.trim() || "";
-                return (
-                  text.length > 50 &&
-                  !text.includes("©") &&
-                  !text.includes("Derechos reservados")
-                );
-              })
-              .slice(0, 2);
-            if (paragraphs.length > 0) {
-              description =
-                paragraphs
-                  .map((p) => p.textContent?.trim())
-                  .join(" ")
-                  .substring(0, 200)
-                  .split(" ")
-                  .slice(0, -1)
-                  .join(" ") + "...";
-            }
+          // Intentar descripción larga combinando párrafos iniciales
+          const paragraphs = Array.from(article.querySelectorAll("p"))
+            .map((p) => (p.textContent || "").trim())
+            .filter(
+              (t) =>
+                t.length > 60 &&
+                !/©|Derechos reservados|Todos los derechos/i.test(t)
+            );
+
+          if (!short && paragraphs.length > 0) {
+            short = paragraphs[0].slice(0, 220).replace(/\s+\S*$/, "") + "…";
+          }
+
+          if (paragraphs.length > 0) {
+            const joined = paragraphs.slice(0, 3).join(" ");
+            long = joined.slice(0, 480).replace(/\s+\S*$/, "") + "…";
           }
         }
+
         return {
-          image: ogImage,
-          title: title,
-          description: description,
+          image: resolvedImage,
+          title: title ?? null,
+          description: short ?? null,
+          descriptionLong: long ?? null,
         };
       } catch (error) {
         console.error("Error fetching article data:", error);
         return null;
       }
     };
+
     const loadArticles = async () => {
       setIsLoading(true);
       try {
         const loadedItems = await Promise.all(
           pressItems.map(async (item) => {
             const data = await fetchArticleData(item.url);
-            const defaultImage =
-              "https://source.unsplash.com/random/800x600?newspaper,article";
             if (data) {
               if (item.type === "article") {
                 return {
                   ...item,
                   headline: data.title || item.headline,
                   image:
-                    data.image && data.image.match(/^https?:\/\//)
+                    data.image && /^https?:\/\//.test(data.image)
                       ? data.image
-                      : defaultImage,
+                      : PLACEHOLDER,
                   description: data.description || item.description,
+                  descriptionLong: data.descriptionLong || item.descriptionLong,
                 };
-              } else if (item.type === "video") {
+              } else {
+                // video
                 return {
                   ...item,
                   thumbnail:
-                    data.image && data.image.match(/^https?:\/\//)
+                    data.image && /^https?:\/\//.test(data.image)
                       ? data.image
-                      : defaultImage,
+                      : PLACEHOLDER,
                 };
               }
             }
+            // Fallbacks locales
             if (item.type === "article") {
               return {
                 ...item,
-                image: defaultImage,
+                image: PLACEHOLDER,
               };
             } else {
               return {
                 ...item,
-                thumbnail: defaultImage,
+                thumbnail: PLACEHOLDER,
               };
             }
           })
         );
+
         setLoadedPressItems(loadedItems);
-        // Guardar en localStorage para futuras cargas rápidas
         localStorage.setItem("pressItemsCache", JSON.stringify(loadedItems));
       } catch (error) {
         console.error("Error loading articles:", error);
@@ -279,8 +302,9 @@ export function usePressItems() {
         setIsLoading(false);
       }
     };
-    // Siempre refresca en segundo plano
+
     loadArticles();
   }, []);
+
   return { loadedPressItems, isLoading, pressItems };
 }
