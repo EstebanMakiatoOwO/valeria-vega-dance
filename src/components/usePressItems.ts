@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
+// ---------- Tipos ----------
 export type PressItem =
   | {
       type: "article";
@@ -9,7 +10,14 @@ export type PressItem =
       description: string;
       descriptionLong?: string;
       image: string;
-      title?: string; // fallback si no hay headline
+      title?: string;
+      // metadatos
+      favicon?: string;
+      siteName?: string;
+      themeColor?: string;
+      domain?: string;
+      // control
+      __ts?: number; // timestamp de cache
     }
   | {
       type: "video";
@@ -18,8 +26,16 @@ export type PressItem =
       description: string;
       thumbnail: string;
       videoId: string;
+      // metadatos
+      favicon?: string;
+      siteName?: string;
+      themeColor?: string;
+      domain?: string;
+      // control
+      __ts?: number;
     };
 
+// ---------- Datos base mínimos ----------
 const PLACEHOLDER =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
@@ -29,14 +45,15 @@ const PLACEHOLDER =
     </svg>`
   );
 
-const pressItems: PressItem[] = [
+// ⚠️ Deja esta lista como tu “fuente de verdad” (datos mínimos inmediatos)
+const pressItemsBase: PressItem[] = [
   {
     editorial: "La Jornada",
     headline: "Cultura",
     url: "https://www.jornada.com.mx/2025/07/20/cultura/a05n1cul",
     description: "Artículo destacado en La Jornada",
     type: "article",
-    image: "",
+    image: PLACEHOLDER,
   },
   {
     editorial: "El Universal",
@@ -44,15 +61,16 @@ const pressItems: PressItem[] = [
     url: "https://www.eluniversal.com.mx/cultura/detras-de-mi-de-mujeres-y-tangos-en-busca-de-la-naturaleza-femenina/?utm_source=web",
     description: "En busca de la naturaleza femenina",
     type: "article",
-    image: "",
+    image: PLACEHOLDER,
   },
   {
-    title: "Entrevista - YouTube",
-    url: "https://www.youtube.com/watch?v=xyCDWj9nMBk",
-    description: "Entrevista en video sobre su trabajo artístico",
+    title: "Entrevista con Valeria Vega Solórzano",
+    url: "https://www.youtube.com/watch?v=xyCDWj9nMBk&t=1s",
+    description:
+      "Ctrl Art . . . un clic al Arte presenta: entrevista con Valeria Vega Solórzano.",
     type: "video",
     videoId: "xyCDWj9nMBk",
-    thumbnail: "",
+    thumbnail: PLACEHOLDER,
   },
   {
     editorial: "La Voz de Michoacán",
@@ -60,15 +78,15 @@ const pressItems: PressItem[] = [
     url: "https://www.lavozdemichoacan.com.mx/cultura/jueves/entrevista-valeria-vega-y-la-danza-como-un-pez-en-el-agua/",
     description: "Entrevista a Valeria Vega",
     type: "article",
-    image: "",
+    image: PLACEHOLDER,
   },
   {
-    title: "Presentación - YouTube",
-    url: "https://youtu.be/OrRppUcA4_s?si=IoVIi39aEgWA6ZfW",
-    description: "Presentación de espectáculo",
+    title: "Espectadores Helénico | Detrás de mí de mujeres y tangos",
+    url: "https://www.youtube.com/watch?v=OrRppUcA4_s&t=2s",
+    description: `Detrás de mí, de mujeres y tangos\n\n¿Cuántas mujeres viven en ti?\n\nDetrás de mí, de mujeres y tangos” es una obra de danza-tango que habla sobre el universo femenino y sus relaciones con el sexo opuesto.\n\nInspirada en 4 personajes de la literatura universal: Yerma de García Lorca, Carmen de Prósper Merimée y Julieta y Lady Macbeth de Shakespeare.\n\nLas cuatro mujeres convergen en en otra tan aparentemente común como cualquier mujer que trabaja detrás de un escritorio. Cuatro mujeres tan afines y distintas a la vez, con voces internas que sufren, aman, odian, seducen, desean, ambicionan y dan color a un mundo interior que parecería pintado en blanco y negro.\nAutor\nValeria Vega Solórzano\n\nDirección\nElisa Rodríguez\n\nElenco\nValeria Vega y Jacob Morales`,
     type: "video",
     videoId: "OrRppUcA4_s",
-    thumbnail: "",
+    thumbnail: PLACEHOLDER,
   },
   {
     editorial: "Puerta Escénica",
@@ -76,7 +94,7 @@ const pressItems: PressItem[] = [
     url: "https://puertaescenica.com/la-dama-del-puerto-el-tango-que-da-voz-a-las-emociones-humanas/",
     description: "El tango que da voz a las emociones humanas",
     type: "article",
-    image: "",
+    image: PLACEHOLDER,
   },
   {
     editorial: "Puerta Escénica",
@@ -84,7 +102,7 @@ const pressItems: PressItem[] = [
     url: "https://puertaescenica.com/una-mirada-a-historias-de-mujeres-y-hombresdetras-de-mi-de-mujeres-y-tangos/",
     description: "Artículo sobre 'Detrás de mí de mujeres y tangos'",
     type: "article",
-    image: "",
+    image: PLACEHOLDER,
   },
   {
     editorial: "Mi Morelia",
@@ -92,7 +110,7 @@ const pressItems: PressItem[] = [
     url: "https://mimorelia.com/noticias/morelia/con-rebozo-valeria-vega-reflexiona-acerca-de-la-vida",
     description: "Reflexión acerca de la vida a través del espectáculo Rebozo",
     type: "article",
-    image: "",
+    image: PLACEHOLDER,
   },
   {
     editorial: "Cambio de Michoacán",
@@ -100,15 +118,15 @@ const pressItems: PressItem[] = [
     url: "https://cambiodemichoacan.com.mx/2024/04/10/rebozo-una-vida-de-danza/",
     description: "Una vida de danza",
     type: "article",
-    image: "",
+    image: PLACEHOLDER,
   },
   {
-    title: "Documental - YouTube",
-    url: "https://youtu.be/tPRuETlYaFM?si=JHlXTO4I5sn20axa",
-    description: "Documental sobre su trayectoria",
+    title: "Valeria Vega Solórzano Entrevista",
+    url: "https://www.youtube.com/watch?v=tPRuETlYaFM",
+    description: `Entrevista a Valeria Vega Solórzano de iO Tango por Angelica Ponce de TV Milenio\n18 julio 2009`,
     type: "video",
     videoId: "tPRuETlYaFM",
-    thumbnail: "",
+    thumbnail: PLACEHOLDER,
   },
   {
     editorial: "Excélsior",
@@ -116,195 +134,355 @@ const pressItems: PressItem[] = [
     url: "https://www.excelsior.com.mx/expresiones/la-musica-se-une-en-el-33-festival-de-musica-de-morelia/1475664",
     description: "La música se une en el 33 Festival de Música de Morelia",
     type: "article",
-    image: "",
+    image: PLACEHOLDER,
   },
 ];
 
-export function usePressItems() {
-  const [loadedPressItems, setLoadedPressItems] = useState<PressItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+// ---------- Helpers ----------
+const CACHE_KEY = "press:cache:v2";
+const STALE_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
+const CONCURRENCY = 2; // procesa 2 en paralelo
+const FETCH_TIMEOUT_MS = 7000;
 
-  useEffect(() => {
-    const cached = localStorage.getItem("pressItemsCache");
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setLoadedPressItems(parsed);
-          setIsLoading(false);
-        }
-      } catch {}
+const getDomain = (url: string) => {
+  try {
+    const u = new URL(url);
+    return u.hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+};
+
+const abs = (maybeUrl: string | null | undefined, base: string) => {
+  if (!maybeUrl) return null;
+  try {
+    return new URL(maybeUrl, base).href;
+  } catch {
+    return null;
+  }
+};
+
+const pickBestIcon = (doc: Document, baseUrl: string): string | null => {
+  const links = [
+    ...doc.querySelectorAll<HTMLLinkElement>('link[rel~="apple-touch-icon"]'),
+    ...doc.querySelectorAll<HTMLLinkElement>('link[rel="icon"]'),
+    ...doc.querySelectorAll<HTMLLinkElement>('link[rel="shortcut icon"]'),
+  ];
+
+  links.sort((a, b) => {
+    const getMax = (el: HTMLLinkElement) => {
+      const s = el.getAttribute("sizes");
+      if (!s) return 0;
+      const m = s
+        .split(" ")
+        .map((x) => parseInt(x.split("x")[0] || "0", 10))
+        .filter(Boolean);
+      return m.length ? Math.max(...m) : 0;
+    };
+    return getMax(b) - getMax(a);
+  });
+
+  for (const l of links) {
+    const href = l.getAttribute("href");
+    const resolved = abs(href, baseUrl);
+    if (resolved && /^https?:\/\//.test(resolved)) return resolved;
+  }
+  return null;
+};
+
+const withTimeout = async (url: string, ms: number) => {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    return res;
+  } finally {
+    clearTimeout(id);
+  }
+};
+
+const fetchArticleData = async (url: string) => {
+  try {
+    // YouTube simplificado
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      const domain = getDomain(url);
+      return {
+        image: null,
+        title: null,
+        description: null,
+        descriptionLong: null,
+        favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+        siteName: "YouTube",
+        themeColor: "#ff0000",
+      };
     }
 
-    const fetchArticleData = async (url: string) => {
-      try {
-        // YouTube: resolvemos miniatura y listo
-        if (url.includes("youtube.com") || url.includes("youtu.be")) {
-          const videoId = url.includes("youtu.be/")
-            ? url.split("youtu.be/")[1].split("?")[0]
-            : url.split("v=")[1]?.split("&")[0];
-          return {
-            image: videoId
-              ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`
-              : null,
-            title: null,
-            description: null,
-            descriptionLong: null,
-          };
-        }
+    const proxied = `https://api.allorigins.win/get?url=${encodeURIComponent(
+      url
+    )}`;
+    const resp = await withTimeout(proxied, FETCH_TIMEOUT_MS);
+    const data = await resp.json();
+    const html = data.contents as string;
 
-        const response = await fetch(
-          `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`
-        );
-        const data = await response.json();
-        const html = data.contents as string;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
 
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
+    let resolvedImage =
+      abs(
+        doc.querySelector('meta[property="og:image"]')?.getAttribute("content"),
+        url
+      ) ||
+      abs(
+        doc
+          .querySelector('meta[name="twitter:image"]')
+          ?.getAttribute("content"),
+        url
+      ) ||
+      abs(doc.querySelector(".article-image img")?.getAttribute("src"), url) ||
+      abs(doc.querySelector("article img")?.getAttribute("src"), url);
 
-        // Imagen OG
-        let imagePath =
-          doc
-            .querySelector('meta[property="og:image"]')
-            ?.getAttribute("content") ||
-          doc
-            .querySelector('meta[name="twitter:image"]')
-            ?.getAttribute("content") ||
-          doc.querySelector(".article-image img")?.getAttribute("src") ||
-          doc.querySelector("article img")?.getAttribute("src");
+    const ogTitle =
+      doc.querySelector('meta[property="og:title"]')?.getAttribute("content") ||
+      doc.querySelector('meta[name="twitter:title"]')?.getAttribute("content");
 
-        let resolvedImage: string | null = null;
-        if (imagePath) {
-          try {
-            imagePath = imagePath.trim();
-            const abs = new URL(imagePath, url).href;
-            if (/^https?:\/\//.test(abs)) resolvedImage = abs;
-          } catch {}
-        }
+    const ogDescription =
+      doc
+        .querySelector('meta[property="og:description"]')
+        ?.getAttribute("content") ||
+      doc
+        .querySelector('meta[name="twitter:description"]')
+        ?.getAttribute("content") ||
+      doc.querySelector('meta[name="description"]')?.getAttribute("content");
 
-        // Título
-        const ogTitle =
-          doc
-            .querySelector('meta[property="og:title"]')
-            ?.getAttribute("content") ||
-          doc
-            .querySelector('meta[name="twitter:title"]')
-            ?.getAttribute("content");
+    const siteName =
+      doc
+        .querySelector('meta[property="og:site_name"]')
+        ?.getAttribute("content") ||
+      doc
+        .querySelector('meta[name="application-name"]')
+        ?.getAttribute("content") ||
+      doc.title?.trim();
 
-        // Descripciones
-        const ogDescription =
-          doc
-            .querySelector('meta[property="og:description"]')
-            ?.getAttribute("content") ||
-          doc
-            .querySelector('meta[name="twitter:description"]')
-            ?.getAttribute("content") ||
-          doc
-            .querySelector('meta[name="description"]')
-            ?.getAttribute("content");
+    const themeColor =
+      doc.querySelector('meta[name="theme-color"]')?.getAttribute("content") ||
+      undefined;
 
-        const article =
-          doc.querySelector("article") ||
-          doc.querySelector(".article-content") ||
-          doc.querySelector(".entry-content") ||
-          doc.querySelector(".post-content") ||
-          doc.querySelector("main");
+    const article =
+      doc.querySelector("article") ||
+      doc.querySelector(".article-content") ||
+      doc.querySelector(".entry-content") ||
+      doc.querySelector(".post-content") ||
+      doc.querySelector("main");
 
-        let title = ogTitle || undefined;
-        let short = ogDescription || undefined;
-        let long: string | undefined;
+    let title = ogTitle || undefined;
+    let short = ogDescription || undefined;
+    let long: string | undefined;
 
-        if (article) {
-          if (!title) {
-            const h1 = article.querySelector("h1");
-            title = h1?.textContent?.trim() || undefined;
-          }
-          // Intentar descripción larga combinando párrafos iniciales
-          const paragraphs = Array.from(article.querySelectorAll("p"))
-            .map((p) => (p.textContent || "").trim())
-            .filter(
-              (t) =>
-                t.length > 60 &&
-                !/©|Derechos reservados|Todos los derechos/i.test(t)
-            );
-
-          if (!short && paragraphs.length > 0) {
-            short = paragraphs[0].slice(0, 220).replace(/\s+\S*$/, "") + "…";
-          }
-
-          if (paragraphs.length > 0) {
-            const joined = paragraphs.slice(0, 3).join(" ");
-            long = joined.slice(0, 480).replace(/\s+\S*$/, "") + "…";
-          }
-        }
-
-        return {
-          image: resolvedImage,
-          title: title ?? null,
-          description: short ?? null,
-          descriptionLong: long ?? null,
-        };
-      } catch (error) {
-        console.error("Error fetching article data:", error);
-        return null;
+    if (article) {
+      if (!title) {
+        const h1 = article.querySelector("h1");
+        title = h1?.textContent?.trim() || undefined;
       }
-    };
-
-    const loadArticles = async () => {
-      setIsLoading(true);
-      try {
-        const loadedItems = await Promise.all(
-          pressItems.map(async (item) => {
-            const data = await fetchArticleData(item.url);
-            if (data) {
-              if (item.type === "article") {
-                return {
-                  ...item,
-                  headline: data.title || item.headline,
-                  image:
-                    data.image && /^https?:\/\//.test(data.image)
-                      ? data.image
-                      : PLACEHOLDER,
-                  description: data.description || item.description,
-                  descriptionLong: data.descriptionLong || item.descriptionLong,
-                };
-              } else {
-                // video
-                return {
-                  ...item,
-                  thumbnail:
-                    data.image && /^https?:\/\//.test(data.image)
-                      ? data.image
-                      : PLACEHOLDER,
-                };
-              }
-            }
-            // Fallbacks locales
-            if (item.type === "article") {
-              return {
-                ...item,
-                image: PLACEHOLDER,
-              };
-            } else {
-              return {
-                ...item,
-                thumbnail: PLACEHOLDER,
-              };
-            }
-          })
+      const paragraphs = Array.from(article.querySelectorAll("p"))
+        .map((p) => (p.textContent || "").trim())
+        .filter(
+          (t) =>
+            t.length > 60 &&
+            !/©|Derechos reservados|Todos los derechos/i.test(t)
         );
 
-        setLoadedPressItems(loadedItems);
-        localStorage.setItem("pressItemsCache", JSON.stringify(loadedItems));
-      } catch (error) {
-        console.error("Error loading articles:", error);
-      } finally {
-        setIsLoading(false);
+      if (!short && paragraphs.length > 0) {
+        short = paragraphs[0].slice(0, 220).replace(/\s+\S*$/, "") + "…";
       }
-    };
 
-    loadArticles();
+      if (paragraphs.length > 0) {
+        const joined = paragraphs.slice(0, 3).join(" ");
+        long = joined.slice(0, 480).replace(/\s+\S*$/, "") + "…";
+      }
+    }
+
+    const bestIcon = pickBestIcon(doc, url);
+    const domain = getDomain(url);
+    const favicon =
+      bestIcon ||
+      (domain
+        ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+        : null);
+
+    return {
+      image: resolvedImage,
+      title: title ?? null,
+      description: short ?? null,
+      descriptionLong: long ?? null,
+      favicon,
+      siteName: siteName || null,
+      themeColor,
+    };
+  } catch {
+    return null;
+  }
+};
+
+// ---------- Cache helpers ----------
+type CacheMap = Record<string, PressItem>;
+
+const readCache = (): CacheMap => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return {};
+    const obj = JSON.parse(raw);
+    return obj && typeof obj === "object" ? obj : {};
+  } catch {
+    return {};
+  }
+};
+
+const writeCache = (map: CacheMap) => {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(map));
+  } catch {
+    // ignore quota errors
+  }
+};
+
+const mergeItem = (base: PressItem, data: Partial<PressItem>): PressItem => {
+  if (base.type === "article") {
+    const d = data as Partial<Extract<PressItem, { type: "article" }>>;
+    return {
+      ...base,
+      image: d?.image || base.image,
+      headline: (d as any)?.headline || (d as any)?.title || base.headline,
+      description: d?.description || base.description,
+      descriptionLong: d?.descriptionLong || (base as any).descriptionLong,
+      favicon: d?.favicon ?? (base as any).favicon,
+      siteName: d?.siteName ?? (base as any).siteName ?? base.editorial,
+      themeColor: d?.themeColor ?? (base as any).themeColor,
+      domain: (base as any).domain ?? getDomain(base.url),
+      __ts: Date.now(),
+    };
+  } else {
+    const d = data as Partial<Extract<PressItem, { type: "video" }>>;
+    return {
+      ...base,
+      thumbnail: (d as any)?.image || d?.thumbnail || base.thumbnail,
+      favicon: d?.favicon ?? (base as any).favicon,
+      siteName: d?.siteName ?? (base as any).siteName ?? "YouTube",
+      themeColor: d?.themeColor ?? (base as any).themeColor ?? "#ff0000",
+      domain: (base as any).domain ?? getDomain(base.url),
+      __ts: Date.now(),
+    };
+  }
+};
+
+// ---------- Hook con carga progresiva ----------
+export function usePressItems() {
+  const [items, setItems] = useState<PressItem[]>(() =>
+    pressItemsBase.map((it) => ({
+      ...it,
+      domain: getDomain(it.url),
+    }))
+  );
+
+  const [isLoading, setIsLoading] = useState(true);
+  const queueRef = useRef<PressItem[]>([]);
+  const runningRef = useRef(0);
+  const cacheRef = useRef<CacheMap>({});
+
+  // Hidrata desde cache y arranca cola progresiva
+  useEffect(() => {
+    cacheRef.current = readCache();
+
+    // aplica cache por-ítem disponible
+    setItems((prev) =>
+      prev.map((base) => {
+        const cached = cacheRef.current[base.url];
+        if (
+          cached &&
+          cached.__ts &&
+          Date.now() - cached.__ts < STALE_MS // sólo si no está “vencido”
+        ) {
+          // mezcla base + cache
+          return { ...base, ...cached };
+        }
+        return base;
+      })
+    );
+
+    // encola TODO, pero los que están frescos se van a saltar en fetcher
+    queueRef.current = [...pressItemsBase];
+
+    // dispara N workers
+    for (let i = 0; i < CONCURRENCY; i++) {
+      tick();
+    }
+
+    // marcamos loading true sólo hasta que la cola vacíe la primera vez
+    setIsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { loadedPressItems, isLoading, pressItems };
+  // worker de la cola
+  const tick = async () => {
+    if (runningRef.current >= CONCURRENCY) return;
+    const next = queueRef.current.shift();
+    if (!next) return;
+
+    runningRef.current += 1;
+
+    try {
+      // si cache fresco, no fetch
+      const cached = cacheRef.current[next.url];
+      const fresh =
+        cached && cached.__ts && Date.now() - cached.__ts < STALE_MS;
+
+      if (!fresh) {
+        const data = await fetchArticleData(next.url);
+
+        if (data) {
+          // mezcla y escribe cache
+          const merged = mergeItem(next, data as any);
+          cacheRef.current[next.url] = merged;
+          writeCache(cacheRef.current);
+
+          // actualiza sólo ese item en UI (incremental)
+          setItems((prev) =>
+            prev.map((p) => (p.url === next.url ? { ...p, ...merged } : p))
+          );
+        } else {
+          // si no hubo data, al menos guarda timestamp para evitar reintento inmediato
+          const merged = mergeItem(next, {});
+          cacheRef.current[next.url] = merged;
+          writeCache(cacheRef.current);
+        }
+      } else {
+        // ya está fresco: asegura que la UI lo tenga
+        setItems((prev) =>
+          prev.map((p) => (p.url === next.url ? { ...p, ...cached } : p))
+        );
+      }
+    } catch {
+      // ignora errores
+    } finally {
+      runningRef.current -= 1;
+      // sigue con el siguiente
+      if (queueRef.current.length) {
+        // yield event loop para no bloquear
+        setTimeout(tick, 0);
+      }
+    }
+  };
+
+  // si hay huecos en ejecución (por errores), intenta rellenar
+  useEffect(() => {
+    if (queueRef.current.length && runningRef.current < CONCURRENCY) {
+      const missing = CONCURRENCY - runningRef.current;
+      for (let i = 0; i < missing; i++) tick();
+    }
+  });
+
+  return {
+    loadedPressItems: items,
+    isLoading,
+    pressItems: pressItemsBase,
+  };
 }

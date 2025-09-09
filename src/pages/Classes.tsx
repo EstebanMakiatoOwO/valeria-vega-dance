@@ -280,6 +280,21 @@ const Classes = () => {
                                     </a>
                                   </div>
                                 )}
+                                {(classItem.title ===
+                                  "Bailes Latinos y de Salón" ||
+                                  classItem.title === "Tango Argentino") && (
+                                  <div className="flex items-center gap-2 text-gray-600">
+                                    <ExternalLink className="w-5 h-5 text-[#3E977D]" />
+                                    <a
+                                      href="https://share.google/zqZaM5oDlKSmQCyNl"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-light underline hover:text-[#3E977D] transition-colors"
+                                    >
+                                      Info y ubicación
+                                    </a>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           )}

@@ -28,14 +28,18 @@ const ytThumbs = (id: string) => ({
   fallback: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
 });
 
-const PLACEHOLDER =
-  "data:image/svg+xml;utf8," +
-  encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'>
-      <rect width='100%' height='100%' fill='#1f2937'/>
-      <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#9ca3af' font-family='system-ui, -apple-system, Segoe UI, Roboto' font-size='42'>Prensa</text>
-    </svg>`
-  );
+// detectar color claro
+const isColorLight = (hex?: string) => {
+  if (!hex) return false;
+  const c = hex.replace("#", "");
+  if (c.length !== 6) return false;
+  const bigint = parseInt(c, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.6;
+};
 
 // --- Layout helpers ---
 type PressType = "article" | "video";
@@ -81,7 +85,7 @@ const Press = () => {
           <div className="w-24 h-px bg-cultural ml-auto mr-0 opacity-60" />
         </div>
 
-        {/* Loading */}
+        {/* Loading (solo para primera pintura; luego todo es incremental) */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
@@ -99,23 +103,28 @@ const Press = () => {
               if (isVideo) {
                 const id = extractYouTubeId(item.videoId ?? item.url ?? "");
                 const { primary } = ytThumbs(id);
-                imgSrc = primary;
+                imgSrc =
+                  item.thumbnail && item.thumbnail.startsWith("http")
+                    ? item.thumbnail
+                    : primary;
                 alt = item.title || "Video";
               } else {
-                imgSrc = item.image || PLACEHOLDER;
+                imgSrc = item.image;
                 alt = item.headline || item.title || "Artículo";
               }
+
+              const publisherName =
+                item.siteName || item.editorial || item.domain || "—";
+              const publisherColor: string | undefined =
+                item.themeColor || undefined;
+              const favicon = item.favicon || "";
 
               return (
                 <div
                   key={`${item.type}-${item.url ?? item.title}-${i}`}
                   className={`${span} [content-visibility:auto] [contain-intrinsic-size:400px_300px]`}
                 >
-                  <div
-                    className="group relative overflow-hidden rounded-2xl bg-card/25 backdrop-blur-sm border border-border/30 shadow-sm
-                               transition-all duration-300 hover:shadow-md hover:-translate-y-[1px]
-                               [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
-                  >
+                  <div className="group relative overflow-hidden rounded-2xl bg-card/25 backdrop-blur-sm border border-border/30 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-[1px] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]">
                     {/* Media */}
                     <div className={`${aspect} relative`}>
                       <img
@@ -133,19 +142,18 @@ const Press = () => {
                             );
                             el.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
                           } else {
-                            el.src = PLACEHOLDER;
+                            el.src =
+                              "data:image/svg+xml;utf8," +
+                              encodeURIComponent(
+                                `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'>
+                                  <rect width='100%' height='100%' fill='#1f2937'/>
+                                  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#9ca3af' font-family='system-ui, -apple-system, Segoe UI, Roboto' font-size='42'>Prensa</text>
+                                </svg>`
+                              );
                           }
                         }}
                       />
-
-                      {/* Badge */}
-                      <div className="absolute top-2.5 left-2.5 z-10">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] tracking-wide bg-black/55 text-white border border-white/10 backdrop-blur-sm">
-                          {isVideo ? "Video" : "Artículo"}
-                        </span>
-                      </div>
-
-                      {/* Overlay */}
+                      {/* Overlay visual */}
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                       {/* Play para video */}
@@ -162,35 +170,53 @@ const Press = () => {
                       )}
                     </div>
 
-                    {/* Preview / Texto */}
+                    {/* Panel de texto */}
                     <div className="px-4 -mt-5">
                       <div className="rounded-xl bg-background/85 backdrop-blur-md border border-border/30 shadow-sm p-4 transition-shadow duration-300 group-hover:shadow-md">
-                        {item.type === "article" ? (
-                          <>
-                            {/* Editorial más grande y atractiva */}
-                            {item.editorial && (
-                              <div className="mb-1.5">
-                                <span
-                                  className="inline-block rounded-lg border border-accent/30 bg-accent/5 px-2.5 py-1
-                                             text-sm md:text-base font-semibold tracking-wide text-accent"
-                                >
-                                  {item.editorial}
-                                </span>
-                              </div>
-                            )}
+                        {/* Fila publisher: logo + chip con themeColor y contraste automático */}
+                        <div className="flex items-center gap-2 mb-2">
+                          {favicon && (
+                            <img
+                              src={favicon}
+                              alt=""
+                              className="w-5 h-5 rounded-[6px] bg-white/80 ring-1 ring-black/5"
+                              loading="lazy"
+                            />
+                          )}
+                          <span
+                            className="text-xs md:text-sm font-semibold truncate max-w-[70%]"
+                            style={{
+                              color: publisherColor
+                                ? isColorLight(publisherColor)
+                                  ? "#000"
+                                  : "#fff"
+                                : undefined,
+                              background: publisherColor
+                                ? `${publisherColor}E6`
+                                : undefined,
+                              padding: publisherColor ? "2px 8px" : undefined,
+                              borderRadius: publisherColor
+                                ? "9999px"
+                                : undefined,
+                            }}
+                            title={publisherName}
+                          >
+                            {publisherName}
+                          </span>
+                        </div>
 
-                            {/* Headline */}
-                            <h3 className="text-xl md:text-2xl font-serif font-semibold text-primary leading-snug [text-wrap:balance]">
-                              {item.headline || item.title}
-                            </h3>
-                          </>
+                        {/* Headline / título */}
+                        {item.type === "article" ? (
+                          <h3 className="text-xl md:text-2xl font-serif font-semibold text-primary leading-snug [text-wrap:balance]">
+                            {item.headline || item.title}
+                          </h3>
                         ) : (
                           <h3 className="text-base md:text-lg font-serif font-light text-primary leading-snug [text-wrap:balance] break-words">
                             {item.title}
                           </h3>
                         )}
 
-                        {/* Descripción (usa la larga si existe) */}
+                        {/* Descripción (larga si existe) */}
                         {(item.descriptionLong || item.description) && (
                           <p className="mt-2 text-sm md:text-[15px] text-muted-foreground/90 leading-relaxed">
                             {item.descriptionLong || item.description}
