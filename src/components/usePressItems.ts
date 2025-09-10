@@ -1,4 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import laJornadaImg from "../assets/press/la-jornada.jpg";
+import elUniversalImg from "../assets/press/el-universal.jpg";
+import lavozMichoacanImg from "../assets/press/lavoz-michoacan.jpg";
+import puertaEscenicaDamaImg from "../assets/press/puerta-escenica-dama.jpg";
+import puertaEscenicaDetrasImg from "../assets/press/puerta-escenica-detras.jpg";
+import miMoreliaImg from "../assets/press/mi-morelia.jpg";
+import cambioMichoacanImg from "../assets/press/cambio-michoacan.jpg";
+import excelsiorImg from "../assets/press/excelsior.jpg";
+import valeriaPortadaImg from "../assets/fotos/valeria-portada.jpg";
 
 // ---------- Tipos ----------
 export type PressItem =
@@ -53,7 +62,7 @@ const pressItemsBase: PressItem[] = [
     url: "https://www.jornada.com.mx/2025/07/20/cultura/a05n1cul",
     description: "Artículo destacado en La Jornada",
     type: "article",
-    image: PLACEHOLDER,
+    image: laJornadaImg,
   },
   {
     editorial: "El Universal",
@@ -61,16 +70,15 @@ const pressItemsBase: PressItem[] = [
     url: "https://www.eluniversal.com.mx/cultura/detras-de-mi-de-mujeres-y-tangos-en-busca-de-la-naturaleza-femenina/?utm_source=web",
     description: "En busca de la naturaleza femenina",
     type: "article",
-    image: PLACEHOLDER,
-  },
-  {
+    image: elUniversalImg,
+  },  {
     title: "Entrevista con Valeria Vega Solórzano",
     url: "https://www.youtube.com/watch?v=xyCDWj9nMBk&t=1s",
     description:
       "Ctrl Art . . . un clic al Arte presenta: entrevista con Valeria Vega Solórzano.",
     type: "video",
     videoId: "xyCDWj9nMBk",
-    thumbnail: PLACEHOLDER,
+    thumbnail: valeriaPortadaImg,
   },
   {
     editorial: "La Voz de Michoacán",
@@ -78,7 +86,7 @@ const pressItemsBase: PressItem[] = [
     url: "https://www.lavozdemichoacan.com.mx/cultura/jueves/entrevista-valeria-vega-y-la-danza-como-un-pez-en-el-agua/",
     description: "Entrevista a Valeria Vega",
     type: "article",
-    image: PLACEHOLDER,
+    image: lavozMichoacanImg,
   },
   {
     title: "Espectadores Helénico | Detrás de mí de mujeres y tangos",
@@ -86,7 +94,7 @@ const pressItemsBase: PressItem[] = [
     description: `Detrás de mí, de mujeres y tangos\n\n¿Cuántas mujeres viven en ti?\n\nDetrás de mí, de mujeres y tangos” es una obra de danza-tango que habla sobre el universo femenino y sus relaciones con el sexo opuesto.\n\nInspirada en 4 personajes de la literatura universal: Yerma de García Lorca, Carmen de Prósper Merimée y Julieta y Lady Macbeth de Shakespeare.\n\nLas cuatro mujeres convergen en en otra tan aparentemente común como cualquier mujer que trabaja detrás de un escritorio. Cuatro mujeres tan afines y distintas a la vez, con voces internas que sufren, aman, odian, seducen, desean, ambicionan y dan color a un mundo interior que parecería pintado en blanco y negro.\nAutor\nValeria Vega Solórzano\n\nDirección\nElisa Rodríguez\n\nElenco\nValeria Vega y Jacob Morales`,
     type: "video",
     videoId: "OrRppUcA4_s",
-    thumbnail: PLACEHOLDER,
+    thumbnail: valeriaPortadaImg,
   },
   {
     editorial: "Puerta Escénica",
@@ -94,7 +102,7 @@ const pressItemsBase: PressItem[] = [
     url: "https://puertaescenica.com/la-dama-del-puerto-el-tango-que-da-voz-a-las-emociones-humanas/",
     description: "El tango que da voz a las emociones humanas",
     type: "article",
-    image: PLACEHOLDER,
+    image: puertaEscenicaDamaImg,
   },
   {
     editorial: "Puerta Escénica",
@@ -102,7 +110,7 @@ const pressItemsBase: PressItem[] = [
     url: "https://puertaescenica.com/una-mirada-a-historias-de-mujeres-y-hombresdetras-de-mi-de-mujeres-y-tangos/",
     description: "Artículo sobre 'Detrás de mí de mujeres y tangos'",
     type: "article",
-    image: PLACEHOLDER,
+    image: puertaEscenicaDetrasImg,
   },
   {
     editorial: "Mi Morelia",
@@ -110,7 +118,7 @@ const pressItemsBase: PressItem[] = [
     url: "https://mimorelia.com/noticias/morelia/con-rebozo-valeria-vega-reflexiona-acerca-de-la-vida",
     description: "Reflexión acerca de la vida a través del espectáculo Rebozo",
     type: "article",
-    image: PLACEHOLDER,
+    image: miMoreliaImg,
   },
   {
     editorial: "Cambio de Michoacán",
@@ -118,15 +126,14 @@ const pressItemsBase: PressItem[] = [
     url: "https://cambiodemichoacan.com.mx/2024/04/10/rebozo-una-vida-de-danza/",
     description: "Una vida de danza",
     type: "article",
-    image: PLACEHOLDER,
-  },
-  {
+    image: cambioMichoacanImg,
+  },  {
     title: "Valeria Vega Solórzano Entrevista",
     url: "https://www.youtube.com/watch?v=tPRuETlYaFM",
     description: `Entrevista a Valeria Vega Solórzano de iO Tango por Angelica Ponce de TV Milenio\n18 julio 2009`,
     type: "video",
     videoId: "tPRuETlYaFM",
-    thumbnail: PLACEHOLDER,
+    thumbnail: valeriaPortadaImg,
   },
   {
     editorial: "Excélsior",
@@ -134,12 +141,12 @@ const pressItemsBase: PressItem[] = [
     url: "https://www.excelsior.com.mx/expresiones/la-musica-se-une-en-el-33-festival-de-musica-de-morelia/1475664",
     description: "La música se une en el 33 Festival de Música de Morelia",
     type: "article",
-    image: PLACEHOLDER,
+    image: excelsiorImg,
   },
 ];
 
 // ---------- Helpers ----------
-const CACHE_KEY = "press:cache:v2";
+const CACHE_KEY = "press:cache:v4"; // Incrementé la versión para forzar recarga
 const STALE_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
 const CONCURRENCY = 2; // procesa 2 en paralelo
 const FETCH_TIMEOUT_MS = 7000;
@@ -348,9 +355,17 @@ const writeCache = (map: CacheMap) => {
 const mergeItem = (base: PressItem, data: Partial<PressItem>): PressItem => {
   if (base.type === "article") {
     const d = data as Partial<Extract<PressItem, { type: "article" }>>;
+    // Solo usar imagen descargada si es válida, no contiene "Prensa" o placeholders, Y la base no tiene ya una imagen específica
+    const hasSpecificImage = base.image && !base.image.includes('data:image/svg+xml');
+    const isValidImage = d?.image && 
+                         d.image.trim() && 
+                         !d.image.includes('Prensa') && 
+                         !d.image.includes('data:image/svg+xml') &&
+                         d.image.startsWith('http');
+    
     return {
       ...base,
-      image: d?.image || base.image,
+      image: hasSpecificImage ? base.image : (isValidImage ? d.image : base.image),
       headline: (d as any)?.headline || (d as any)?.title || base.headline,
       description: d?.description || base.description,
       descriptionLong: d?.descriptionLong || (base as any).descriptionLong,
@@ -362,9 +377,16 @@ const mergeItem = (base: PressItem, data: Partial<PressItem>): PressItem => {
     };
   } else {
     const d = data as Partial<Extract<PressItem, { type: "video" }>>;
+    // Para videos, mantener el thumbnail específico si ya tiene uno asignado (no es PLACEHOLDER)
+    const hasSpecificThumbnail = base.thumbnail && !base.thumbnail.includes('data:image/svg+xml');
+    const isValidThumbnail = (d as any)?.image && 
+                            (d as any).image.trim() && 
+                            !(d as any).image.includes('Prensa') && 
+                            !(d as any).image.includes('data:image/svg+xml');
+    
     return {
       ...base,
-      thumbnail: (d as any)?.image || d?.thumbnail || base.thumbnail,
+      thumbnail: hasSpecificThumbnail ? base.thumbnail : (isValidThumbnail ? (d as any).image : (d?.thumbnail || base.thumbnail)),
       favicon: d?.favicon ?? (base as any).favicon,
       siteName: d?.siteName ?? (base as any).siteName ?? "YouTube",
       themeColor: d?.themeColor ?? (base as any).themeColor ?? "#ff0000",
