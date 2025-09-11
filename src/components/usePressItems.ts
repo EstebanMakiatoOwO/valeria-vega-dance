@@ -71,7 +71,8 @@ const pressItemsBase: PressItem[] = [
     description: "En busca de la naturaleza femenina",
     type: "article",
     image: elUniversalImg,
-  },  {
+  },
+  {
     title: "Entrevista con Valeria Vega Solórzano",
     url: "https://www.youtube.com/watch?v=xyCDWj9nMBk&t=1s",
     description:
@@ -127,7 +128,8 @@ const pressItemsBase: PressItem[] = [
     description: "Una vida de danza",
     type: "article",
     image: cambioMichoacanImg,
-  },  {
+  },
+  {
     title: "Valeria Vega Solórzano Entrevista",
     url: "https://www.youtube.com/watch?v=tPRuETlYaFM",
     description: `Entrevista a Valeria Vega Solórzano de iO Tango por Angelica Ponce de TV Milenio\n18 julio 2009`,
@@ -355,17 +357,22 @@ const writeCache = (map: CacheMap) => {
 const mergeItem = (base: PressItem, data: Partial<PressItem>): PressItem => {
   if (base.type === "article") {
     const d = data as Partial<Extract<PressItem, { type: "article" }>>;
-    // Solo usar imagen descargada si es válida, no contiene "Prensa" o placeholders, Y la base no tiene ya una imagen específica
-    const hasSpecificImage = base.image && !base.image.includes('data:image/svg+xml');
-    const isValidImage = d?.image && 
-                         d.image.trim() && 
-                         !d.image.includes('Prensa') && 
-                         !d.image.includes('data:image/svg+xml') &&
-                         d.image.startsWith('http');
-    
+    const hasSpecificImage =
+      base.image && !base.image.includes("data:image/svg+xml");
+    const isValidImage =
+      d?.image &&
+      d.image.trim() &&
+      !d.image.includes("Prensa") &&
+      !d.image.includes("data:image/svg+xml") &&
+      d.image.startsWith("http");
+
     return {
       ...base,
-      image: hasSpecificImage ? base.image : (isValidImage ? d.image : base.image),
+      image: hasSpecificImage
+        ? base.image
+        : isValidImage
+          ? d.image
+          : base.image,
       headline: (d as any)?.headline || (d as any)?.title || base.headline,
       description: d?.description || base.description,
       descriptionLong: d?.descriptionLong || (base as any).descriptionLong,
@@ -377,16 +384,19 @@ const mergeItem = (base: PressItem, data: Partial<PressItem>): PressItem => {
     };
   } else {
     const d = data as Partial<Extract<PressItem, { type: "video" }>>;
-    // Para videos, mantener el thumbnail específico si ya tiene uno asignado (no es PLACEHOLDER)
-    const hasSpecificThumbnail = base.thumbnail && !base.thumbnail.includes('data:image/svg+xml');
-    const isValidThumbnail = (d as any)?.image && 
-                            (d as any).image.trim() && 
-                            !(d as any).image.includes('Prensa') && 
-                            !(d as any).image.includes('data:image/svg+xml');
-    
+    // Para videos, usar siempre el thumbnail de YouTube si hay videoId
+    let ytThumb = "";
+    if (base.videoId) {
+      ytThumb = `https://i.ytimg.com/vi/${base.videoId}/maxresdefault.jpg`;
+    }
+    // Si el thumbnail de YouTube falla, usar hqdefault
+    const fallbackThumb = base.videoId
+      ? `https://i.ytimg.com/vi/${base.videoId}/hqdefault.jpg`
+      : base.thumbnail;
+
     return {
       ...base,
-      thumbnail: hasSpecificThumbnail ? base.thumbnail : (isValidThumbnail ? (d as any).image : (d?.thumbnail || base.thumbnail)),
+      thumbnail: ytThumb || fallbackThumb,
       favicon: d?.favicon ?? (base as any).favicon,
       siteName: d?.siteName ?? (base as any).siteName ?? "YouTube",
       themeColor: d?.themeColor ?? (base as any).themeColor ?? "#ff0000",
@@ -399,10 +409,19 @@ const mergeItem = (base: PressItem, data: Partial<PressItem>): PressItem => {
 // ---------- Hook con carga progresiva ----------
 export function usePressItems() {
   const [items, setItems] = useState<PressItem[]>(() =>
-    pressItemsBase.map((it) => ({
-      ...it,
-      domain: getDomain(it.url),
-    }))
+    pressItemsBase.map((it) => {
+      if (it.type === "video" && it.videoId) {
+        return {
+          ...it,
+          domain: getDomain(it.url),
+          thumbnail: `https://i.ytimg.com/vi/${it.videoId}/maxresdefault.jpg`,
+        };
+      }
+      return {
+        ...it,
+        domain: getDomain(it.url),
+      };
+    })
   );
 
   const [isLoading, setIsLoading] = useState(true);

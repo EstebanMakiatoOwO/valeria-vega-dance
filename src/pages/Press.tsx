@@ -95,16 +95,16 @@ const Press = () => {
             {items.map((item: any, i: number) => {
               const isVideo = item.type === "video";
               const span = spanClass(i);
-              const aspect = aspectClass(isVideo ? "video" : "article");              // Imagen fuente
+              const aspect = aspectClass(isVideo ? "video" : "article"); // Imagen fuente
               let imgSrc = "";
               let alt = "";
               if (isVideo) {
-                const id = extractYouTubeId(item.videoId ?? item.url ?? "");
-                const { primary } = ytThumbs(id);
                 imgSrc =
-                  item.thumbnail && (item.thumbnail.startsWith("http") || item.thumbnail.startsWith("/"))
+                  item.thumbnail &&
+                  (item.thumbnail.startsWith("http") ||
+                    item.thumbnail.startsWith("/"))
                     ? item.thumbnail
-                    : primary;
+                    : "";
                 alt = item.title || "Video";
               } else {
                 imgSrc = item.image;
