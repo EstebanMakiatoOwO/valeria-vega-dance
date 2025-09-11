@@ -98,6 +98,7 @@ const Press = () => {
               const aspect = aspectClass(isVideo ? "video" : "article"); // Imagen fuente
               let imgSrc = "";
               let alt = "";
+              let imgStyle = {};
               if (isVideo) {
                 imgSrc =
                   item.thumbnail &&
@@ -109,6 +110,10 @@ const Press = () => {
               } else {
                 imgSrc = item.image;
                 alt = item.headline || item.title || "Artículo";
+                // Ajuste especial para La Jornada
+                if (item.editorial === "La Jornada") {
+                  imgStyle = { objectPosition: "top" };
+                }
               }
 
               const publisherName =
@@ -132,6 +137,7 @@ const Press = () => {
                         loading="lazy"
                         decoding="async"
                         sizes={IMG_SIZES}
+                        style={imgStyle}
                         onError={(e) => {
                           const el = e.currentTarget as HTMLImageElement;
                           if (isVideo) {
