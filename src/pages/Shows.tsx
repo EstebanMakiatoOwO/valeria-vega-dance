@@ -122,6 +122,13 @@ const Shows = () => {
     },
   ];
 
+  // Detecta si el navegador es Chrome o Edge (que muestran barra PDF nativa)
+  const isChromeOrEdge = useMemo(() => {
+    if (typeof navigator === "undefined") return false;
+    const ua = navigator.userAgent;
+    return /Chrome\//.test(ua) || /Edg\//.test(ua);
+  }, []);
+
   const pdfUrl = useMemo(() => currentShow?.pdf ?? null, [currentShow]);
 
   function openPdf(show: ShowItem) {
@@ -158,11 +165,16 @@ const Shows = () => {
                 al encuentro con sus pasiones desde una concepción e
                 interpretación propias.
               </p>
+
               <p className="font-sans text-[17px] leading-relaxed text-gray-300">
                 Reúne de manera independiente y por proyecto a distintos
                 creadores: bailarines, músicos, iluminadores, escenógrafos,
                 compositores, directores, dramaturgos, coreógrafos y diseñadores
-                de vestuario...
+                de vestuario como: Martha Benitez, Libertad Mardel, Jésica
+                Elizondo, Tenzing Ortega + Erika Suárez, Hasam Díaz Fierro,
+                Erika Méndez, Cesar "Chacho" Guerra, Francisco de León, Eduardo
+                Ruiz Saviñon, Luis Escárcega, Elisa Rodríguez, Horacio Rosso,
+                Jacob Morales, entre muchos otros artistas y diseñadores.
               </p>
             </div>
           </div>
@@ -253,6 +265,7 @@ const Shows = () => {
       </div>
 
       {/* Modal para PDF */}
+      {/* MODAL */}
       <Dialog
         open={open}
         onOpenChange={(v) => {
@@ -264,90 +277,70 @@ const Shows = () => {
           }
         }}
       >
-        <DialogContent className="max-w-[min(1400px,98vw)] w-[98vw] h-[92vh] p-0 overflow-hidden bg-zinc-950/90 border border-white/10 backdrop-blur-xl rounded-2xl shadow-2xl">
-          {/* Botones de acción: Descargar, Abrir en pestaña, Cerrar */}
-          <div className="absolute top-3 right-3 z-20 flex gap-2">
-            {pdfUrl && (
-              <>
-                <a
-                  href={pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-full border border-white/15 bg-black/50 p-2 text-white hover:bg-black/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-                  aria-label="Abrir en nueva pestaña"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-                <a
-                  href={pdfUrl}
-                  download
-                  className="inline-flex items-center justify-center rounded-full border border-white/15 bg-black/50 p-2 text-white hover:bg-black/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-                  aria-label="Descargar PDF"
-                >
-                  <Download className="w-4 h-4" />
-                </a>
-              </>
-            )}
-            <button
-              onClick={() => setOpen(false)}
-              aria-label="Cerrar"
-              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-black/50 p-2 text-white hover:bg-black/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
+        <DialogContent className="group max-w-[min(1400px,98vw)] w-[98vw] h-[92vh] p-0 overflow-hidden bg-zinc-950/90 border border-white/10 backdrop-blur-xl rounded-2xl shadow-2xl">
+          {/* MICRO-TOOLBAR flotante (solo iconos, sin aumentar altura) */}
+          {pdfUrl && (
+            <div className="absolute top-2 right-2 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/50 px-2 py-1.5 backdrop-blur-md shadow-md opacity-80 hover:opacity-100 transition">
+              <a
+                href={pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Abrir en pestaña nueva"
+                aria-label="Abrir en pestaña nueva"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              >
+                <ExternalLink className="w-6 h-6" />
+              </a>
+              <a
+                href={pdfUrl}
+                download
+                title="Descargar PDF"
+                aria-label="Descargar PDF"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              >
+                <Download className="w-6 h-6" />
+              </a>
+              <button
+                onClick={() => setOpen(false)}
+                title="Cerrar (Esc)"
+                aria-label="Cerrar"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+          )}
 
           {/* Loader */}
           {pdfLoading && !pdfError && (
             <div className="absolute inset-0 grid place-items-center z-10">
               <div className="flex flex-col items-center gap-3 text-white/80">
                 <div className="w-9 h-9 rounded-full border-2 border-white/20 border-t-white/70 animate-spin" />
-                <span className="text-xs tracking-wide">Cargando dossier…</span>
+                <span className="text-xs tracking-wide">Cargando carpeta</span>
               </div>
             </div>
           )}
 
-          {/* Canvas PDF full-bleed */}
-          {pdfUrl && (
-            <iframe
-              key={pdfUrl}
-              src={`${pdfUrl}#toolbar=0&view=FitH`}
-              title={`Dossier ${currentShow?.title ?? ""}`}
-              className={[
-                "absolute inset-0 w-full h-full border-0",
-                pdfLoading ? "opacity-0" : "opacity-100",
-              ].join(" ")}
-              onLoad={() => setPdfLoading(false)}
-              onError={() => {
-                setPdfLoading(false);
-                setPdfError("embed-failed");
-                // Si es móvil, intenta descargar o abrir el PDF en nueva pestaña
-                externalOrDownload(pdfUrl);
-                // Si el usuario está en móvil y ocurre un error al mostrar el PDF, fuerza la descarga o abre en nueva pestaña
-                function externalOrDownload(url: string) {
-                  if (!url) return;
-                  const isMobile =
-                    typeof window !== "undefined" &&
-                    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-                      navigator.userAgent
-                    );
-                  if (isMobile) {
-                    // Intenta forzar la descarga
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = "";
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  } else {
-                    // En desktop, solo abre en nueva pestaña
-                    window.open(url, "_blank", "noopener");
-                  }
-                }
-                setOpen(false);
-              }}
-            />
-          )}
+          {/* Lienzo PDF */}
+          <div className="relative w-full h-full">
+            {pdfUrl && (
+              <iframe
+                key={pdfUrl}
+                src={`${pdfUrl}#toolbar=0&view=FitH`}
+                title={`Dossier ${currentShow?.title ?? ""}`}
+                className={[
+                  "absolute inset-0 w-full h-full border-0",
+                  pdfLoading ? "opacity-0" : "opacity-100",
+                ].join(" ")}
+                onLoad={() => setPdfLoading(false)}
+                onError={() => {
+                  setPdfLoading(false);
+                  setPdfError("embed-failed");
+                  setOpen(false);
+                }}
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
