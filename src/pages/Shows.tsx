@@ -59,6 +59,7 @@ const Shows = () => {
       title: "LA DAMA DEL PUERTO",
       gradient: "from-amber-500 via-orange-500 to-red-500",
       image: damaPuertoImg,
+      pdf: "/pdfs/dama.pdf",
     },
     {
       year: "2016",
