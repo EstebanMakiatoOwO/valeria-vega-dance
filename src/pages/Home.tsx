@@ -8,8 +8,8 @@ import logo from "@/assets/logo.png";
 const SESSION_KEY = "io.eventsPromo.seen.v3";
 
 const Home = () => {
-  // Mostrar el modal siempre al abrir Home
-  const [showEventsPromo, setShowEventsPromo] = useState(true);
+  // Mostrar el modal solo una vez por sesión
+  const [showEventsPromo, setShowEventsPromo] = useState(false);
   const { search } = useLocation();
 
   useEffect(() => {
@@ -25,8 +25,8 @@ const Home = () => {
     const seen = sessionStorage.getItem(SESSION_KEY) === "1";
     if (seen) return;
 
-    // Aumentado a 3.5s para apreciar la imagen y el logo
-    const timer = setTimeout(() => setShowEventsPromo(true), 3500);
+    // Aumentado a 5s para apreciar la imagen y el logo antes del modal
+    const timer = setTimeout(() => setShowEventsPromo(true), 5000);
     return () => clearTimeout(timer);
   }, [search]);
 

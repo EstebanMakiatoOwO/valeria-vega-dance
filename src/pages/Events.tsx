@@ -50,7 +50,7 @@ const Events = () => {
       gradient: "from-emerald-500 via-teal-500 to-cyan-500",
       flyer: rebozoFlyer,
       description:
-        "Espectáculo unipersonal de música, danza y teatro, que aborda el proceso de \nelaboración del REBOZO, la prenda tradicional mexicana por excelencia, en una metáfora del tejido de la vida misma.“El Rebozo es un legado Divino”. El arte del tejer encierra un conocimiento y legadoque envuelve más allá de la tradición, el espíritu de sobrevivencia de la mujer,madre, trabajadora, guerrera y también de sus ancestros viviendo en el espíritu deesta prenda.La música creación original para la puesta del gran músico Celso Duarte, la danza yel teatro, sirven como vehículo para comunicar el dilema de la existencia entiempos donde llegamos a sentirnos sin rumbo",
+        "Espectáculo unipersonal de música, danza y teatro, que aborda el proceso de elaboración del REBOZO, la prenda tradicional mexicana por excelencia, en una metáfora del tejido de la vida misma.",
       dateText: "28, 29 y 30 de noviembre 2025",
       notes: [
         "Boleto $250",
@@ -244,7 +244,7 @@ const Events = () => {
       >
         <DialogContent className="max-w-[min(980px,95vw)] w-[95vw] max-h-[90vh] p-0 overflow-hidden bg-zinc-950/95 border border-white/10 backdrop-blur-xl rounded-2xl shadow-2xl [&>button[class*='sr-only']]:hidden">
           {currentEvent && (
-            <div className="relative">
+            <div className="relative h-full">
               <button
                 onClick={() => setOpen(false)}
                 className="absolute top-4 right-4 z-30 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-md border border-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 transition-all duration-200"
@@ -253,9 +253,9 @@ const Events = () => {
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="grid md:grid-cols-2 gap-0 h-full">
-                {/* ★ Modal imagen no-crop + aspect ratio en móvil */}
-                <div className="relative aspect-[3/4] md:h-auto overflow-hidden">
+              <div className="grid md:grid-cols-2 gap-0 h-full max-h-[90vh]">
+                {/* ★ Imagen: oculta en móviles (md:block) */}
+                <div className="hidden md:block relative overflow-hidden">
                   <img
                     src={currentEvent.flyer}
                     alt=""
@@ -272,7 +272,8 @@ const Events = () => {
                   />
                 </div>
 
-                <div className="p-6 sm:p-8 flex flex-col justify-center space-y-6 overflow-y-auto max-h-[60vh] md:max-h-none">
+                {/* ★ Contenido: full-width en móviles, scroll habilitado */}
+                <div className="p-6 sm:p-8 space-y-6 overflow-y-auto max-h-[90vh]">
                   <div>
                     <div
                       className={`w-16 h-1 bg-gradient-to-r ${currentEvent.gradient} rounded-full mb-4`}
