@@ -27,7 +27,7 @@ const Classes = () => {
           bgColor: "bg-gradient-to-br from-[#BC5E6F]/20 to-[#D67084]/30",
           borderColor: "border-[#BC5E6F]/30",
         },
-        {
+        /*{
           title: "Bailes Latinos y de Salón",
           level: "Principiantes",
           description:
@@ -38,7 +38,7 @@ const Classes = () => {
           color: "[#B1A61A]",
           bgColor: "bg-gradient-to-br from-[#B1A61A]/20 to-[#CEC235]/30",
           borderColor: "border-[#B1A61A]/30",
-        },
+        },*/
       ],
     },
     {

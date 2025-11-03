@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Classes from "./pages/Classes";
 import Shows from "./pages/Shows";
+import Events from "./pages/Events";
 import Press from "./pages/Press";
 import Contact from "./pages/Contact";
 import Gallery from "./pages/Gallery";
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/classes" element={<Classes />} />
             <Route path="/shows" element={<Shows />} />
+            <Route path="/events" element={<Events />} />
             <Route path="/press" element={<Press />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/contact" element={<Contact />} />

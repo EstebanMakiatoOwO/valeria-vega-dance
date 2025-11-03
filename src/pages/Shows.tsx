@@ -156,28 +156,35 @@ const Shows = () => {
         </div>
 
         {/* iO Artes Escénicas section */}
-        <div className="mb-20 animate-fade-in">
+        <div className="mb-20 animate-fade-in" lang="es">
           <div className="bg-card/50 backdrop-blur-sm p-8 rounded-sm border border-border/30">
-            <div className="space-y-6">
-              <p className="font-sans text-[17px] leading-relaxed text-gray-200">
-                Valeria Vega Solórzano funda con Mario Fratta en 2006 iO Artes
-                Escénicas. Utiliza el lenguaje teatral y dancístico para crear
-                espectáculos que cuentan historias y transportan al espectador
-                al encuentro con sus pasiones desde una concepción e
-                interpretación propias.
-              </p>
+            <h2 className="font-serif text-2xl md:text-3xl text-white tracking-tight mb-4">
+              Acerca de iO Artes Escénicas
+            </h2>
 
-              <p className="font-sans text-[17px] leading-relaxed text-gray-300">
-                Reúne de manera independiente y por proyecto a distintos
-                creadores: bailarines, músicos, iluminadores, escenógrafos,
-                compositores, directores, dramaturgos, coreógrafos y diseñadores
-                de vestuario como: Martha Benitez, Libertad Mardel, Jésica
-                Elizondo, Tenzing Ortega + Erika Suárez, Hasam Díaz Fierro,
-                Erika Méndez, Cesar "Chacho" Guerra, Francisco de León, Eduardo
-                Ruiz Saviñon, Luis Escárcega, Elisa Rodríguez, Horacio Rosso,
-                Jacob Morales, entre muchos otros artistas y diseñadores.
-              </p>
-            </div>
+            <p className="font-sans text-[17px] leading-relaxed text-gray-200 text-justify">
+              Sello fundado en 2006 por Valeria Vega Solórzano que utiliza el
+              lenguaje teatral y dancístico para crear espectáculos que cuentan
+              historias y transportan al espectador al encuentro con sus
+              pasiones desde una concepción e interpretación propias. Reúne de
+              manera independiente y por proyecto a distintos creadores:
+              bailarines, iluminadores, escenógrafos, compositores, directores,
+              dramaturgos, coreógrafos y diseñadores de vestuario.
+            </p>
+
+            <p className="mt-6 font-sans text-[17px] leading-relaxed text-gray-200 text-justify">
+              A la fecha ha realizado 14 puestas en escena destacando “Malena
+              baila el tango” (Foro de las Artes, CENART), iO Tango (Festival
+              internacional de música de Morelia) “Detrás de mí, de mujeres y
+              tangos” (Foro de las Artes, CENART y Teatro de la Danza, INBA) “Mi
+              tango”, “Manon, un último tango”, “Los colores del tango”( Los
+              Talleres de Coyoacán), “La dama del puerto” (Circuito Nacional de
+              Artes Escénicas en espacios independientes), “Las notas del tango”
+              (Un Teatro), “Mordisquito” (Casa del Lago UNAM), "Detrás de mi, de
+              mujeres y tangos" (Foro de las Artes CENART, Teatro de la Danza
+              INBA, Festival internacional de danza Oaxaca, Foro La Gruta,
+              Helénico), entre otros.
+            </p>
           </div>
         </div>
 

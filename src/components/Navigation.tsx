@@ -12,6 +12,7 @@ const Navigation = () => {
     { name: "Acerca\u00A0de", href: "/about" },
     { name: "Clases", href: "/classes" },
     { name: "Espectáculos", href: "/shows" },
+    { name: "Eventos", href: "/events" },
     { name: "Galería", href: "/gallery" },
     { name: "Prensa", href: "/press" },
     { name: "Contacto", href: "/contact" },
