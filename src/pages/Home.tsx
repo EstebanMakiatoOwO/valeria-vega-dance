@@ -25,7 +25,6 @@ const Home = () => {
     const seen = sessionStorage.getItem(SESSION_KEY) === "1";
     if (seen) return;
 
-    // Aumentado a 5s para apreciar la imagen y el logo antes del modal
     const timer = setTimeout(() => setShowEventsPromo(true), 5000);
     return () => clearTimeout(timer);
   }, [search]);

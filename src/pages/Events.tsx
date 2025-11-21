@@ -35,8 +35,7 @@ const Events = () => {
   const [currentEvent, setCurrentEvent] = useState<EventItem | null>(null);
 
   const events: EventItem[] = [
-    /*{
-      
+    {
       dates: [
         { day: "28", time: "19:00 hrs", label: "Viernes" },
         { day: "29", time: "16:00 hrs", label: "Sábado" },
@@ -59,33 +58,7 @@ const Events = () => {
         "Boletos en taquilla",
       ],
       reservationUrl: "https://wa.me/525513361466", // ★ botón en modal
-      // ticketUrl: "https://tusboletos.com/rebozo"
-    },*/
-    {
-      dates: [
-        { day: "12", time: "20:00 hrs", label: "Miércoles" }, // 12 nov 2025 es miércoles
-      ],
-      month: "Noviembre",
-      year: "2025",
-      title: "REBOZO",
-      location: "Teatro Varsovia",
-      address:
-        "C. Varsovia 9 116, Juárez, Cuauhtémoc, 06600 Ciudad de México, CDMX",
-      gradient: "from-fuchsia-500 via-purple-500 to-indigo-500", // puedes ajustar a tu paleta
-      flyer: varsoviaFlyer,
-      description:
-        "REBOZO es un poderoso espectáculo unipersonal que fusiona música, danza y teatro para hablar de identidad, herencia y el legado ancestral. Acompaña a la protagonista en un viaje de regreso a casa para re-descubrir su fuerza a través de la tradición rebocera.\n\nUna obra conmovedora sobre la pertenencia y los dilemas humanos.",
-      // Mostramos este texto exacto como encabezado flexible
-      dateText: "Única función: 12 de noviembre, 8:00 pm",
-      notes: [
-        "Preventa hasta el 5 de noviembre",
-        "Precio preventa $250",
-        "Precio normal $350",
-        "Boletos en taquilla, Ticketmaster o al 5548949259",
-      ],
-      ticketUrl:
-        "https://www.ticketmaster.com.mx/rebozo-io-artes-escenicas-ciudad-de-mexico-12-11-2025/event/3D00633ABB03943D", // enlace informativo
-      // reservationUrl: "" // NO ponemos enlace de WhatsApp
+      //ticketUrl: "https://tusboletos.com/rebozo",
     },
   ];
 
