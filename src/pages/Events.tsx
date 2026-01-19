@@ -3,7 +3,9 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Calendar, MapPin, Clock, ExternalLink, X } from "lucide-react";
 
 import rebozoFlyer from "@/assets/events/rebozo-postal.jpeg";
-import varsoviaFlyer from "@/assets/events/rebozo-varsovia.jpeg"; // ← reemplaza por la ruta real de tu flyer
+import varsoviaFlyer from "@/assets/events/rebozo-varsovia.jpeg";
+import rebozoMarzoFlyer from "@/assets/events/rebozo-marzo.jpeg";
+import lasOrquestasFlyer from "@/assets/events/las_orquestas_marzo.jpeg";
 
 type EventDate = {
   day: string;
@@ -34,7 +36,75 @@ const Events = () => {
   const [open, setOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<EventItem | null>(null);
 
-  const events: EventItem[] = [
+  // Helper function to check if an event has passed
+  function hasEventPassed(event: EventItem): boolean {
+    const now = new Date();
+    const monthMap: { [key: string]: number } = {
+      Enero: 0,
+      Febrero: 1,
+      Marzo: 2,
+      Abril: 3,
+      Mayo: 4,
+      Junio: 5,
+      Julio: 6,
+      Agosto: 7,
+      Septiembre: 8,
+      Octubre: 9,
+      Noviembre: 10,
+      Diciembre: 11,
+    };
+
+    const monthIndex = monthMap[event.month];
+    if (monthIndex === undefined) return false;
+
+    // Get the last date of the event
+    const lastDate = event.dates[event.dates.length - 1];
+    const lastDay = parseInt(lastDate.day);
+    const year = parseInt(event.year);
+
+    // Create date for the last day of the event at end of day (23:59:59)
+    const eventEndDate = new Date(year, monthIndex, lastDay, 23, 59, 59);
+
+    return now > eventEndDate;
+  }
+
+  const allEvents: EventItem[] = [
+    {
+      dates: [
+        { day: "11", time: "20:00 hrs", label: "Martes" },
+        { day: "18", time: "20:00 hrs", label: "Martes" },
+      ],
+      month: "Febrero",
+      year: "2026",
+      title: "REBOZO",
+      location: "Teatro Varsovia",
+      address: "Teatro Varsovia, Ciudad de México",
+      gradient: "from-rose-500 via-pink-500 to-fuchsia-500",
+      flyer: rebozoMarzoFlyer,
+      description:
+        "Espectáculo unipersonal de música, danza y teatro, que aborda el proceso de elaboración del REBOZO, la prenda tradicional mexicana por excelencia, en una metáfora del tejido de la vida misma.",
+      dateText: "11 y 18 de febrero 2026",
+      notes: ["Boleto $350"],
+    },
+    {
+      dates: [
+        { day: "8", time: "12:00 hrs", label: "Sábado" },
+        { day: "8", time: "17:00 hrs", label: "Sábado" },
+        { day: "15", time: "12:00 hrs", label: "Sábado" },
+        { day: "15", time: "17:00 hrs", label: "Sábado" },
+      ],
+      month: "Marzo",
+      year: "2026",
+      title: "Las Orquestas",
+      location: "Sala Julián Carrillo Radio UNAM",
+      address: "Adolfo Prieto 133, Col. Del Valle, Ciudad de México",
+      gradient: "from-amber-500 via-orange-500 to-red-500",
+      flyer: lasOrquestasFlyer,
+      description:
+        'iO artes escénicas y La Virtud Producciones presentan "Las Orquestas" de Valeria Vega Solórzano.',
+      dateText: "8 y 15 de marzo 2026",
+      notes: ["Contacto: 5529009002"],
+    },
     {
       dates: [
         { day: "28", time: "19:00 hrs", label: "Viernes" },
@@ -57,10 +127,12 @@ const Events = () => {
         "Descuentos a estudiantes e INAPAM",
         "Boletos en taquilla",
       ],
-      reservationUrl: "https://wa.me/525513361466", // ★ botón en modal
-      //ticketUrl: "https://tusboletos.com/rebozo",
+      reservationUrl: "https://wa.me/525513361466",
     },
   ];
+
+  // Filter out past events
+  const events = allEvents.filter((event) => !hasEventPassed(event));
 
   function openEventDetails(event: EventItem) {
     setCurrentEvent(event);
@@ -70,7 +142,7 @@ const Events = () => {
   function formatDateRange(
     dates: EventDate[],
     month: string,
-    year: string
+    year: string,
   ): string {
     if (dates.length === 0) return "";
     if (dates.length === 1) return `${dates[0].day} ${month} ${year}`;

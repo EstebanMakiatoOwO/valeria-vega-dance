@@ -4,11 +4,14 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Calendar, X } from "lucide-react";
 import valeriaDancer from "@/assets/fotos/valeria-portada.jpg";
 import logo from "@/assets/logo.png";
+import rebozoVideo from "@/assets/videos/rebozo.mp4";
 
 const SESSION_KEY = "io.eventsPromo.seen.v3";
+const VIDEO_KEY = "io.videoPromo.seen.v1";
 
 const Home = () => {
-  // Mostrar el modal solo una vez por sesión
+  // Estado para ambos modales
+  const [showVideoPromo, setShowVideoPromo] = useState(false);
   const [showEventsPromo, setShowEventsPromo] = useState(false);
   const { search } = useLocation();
 
@@ -18,18 +21,40 @@ const Home = () => {
 
     if (forceOpen) {
       sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(VIDEO_KEY);
       setShowEventsPromo(true);
       return;
     }
 
-    const seen = sessionStorage.getItem(SESSION_KEY) === "1";
-    if (seen) return;
+    const videoSeen = sessionStorage.getItem(VIDEO_KEY) === "1";
+    const eventsSeen = sessionStorage.getItem(SESSION_KEY) === "1";
 
-    const timer = setTimeout(() => setShowEventsPromo(true), 5000);
-    return () => clearTimeout(timer);
+    // Si no se ha visto el video, mostrarlo primero
+    if (!videoSeen) {
+      const timer = setTimeout(() => setShowVideoPromo(true), 3000);
+      return () => clearTimeout(timer);
+    }
+
+    // Si ya se vio el video pero no los eventos, mostrar eventos
+    if (!eventsSeen) {
+      const timer = setTimeout(() => setShowEventsPromo(true), 5000);
+      return () => clearTimeout(timer);
+    }
   }, [search]);
 
-  function closePromo() {
+  function closeVideoPromo() {
+    setShowVideoPromo(false);
+    sessionStorage.setItem(VIDEO_KEY, "1");
+    // Después de cerrar el video, esperar un poco y mostrar eventos
+    setTimeout(() => {
+      const eventsSeen = sessionStorage.getItem(SESSION_KEY) === "1";
+      if (!eventsSeen) {
+        setShowEventsPromo(true);
+      }
+    }, 2000);
+  }
+
+  function closeEventsPromo() {
     setShowEventsPromo(false);
     sessionStorage.setItem(SESSION_KEY, "1");
   }
@@ -59,10 +84,52 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Modal: elegante y transparente con degradados sutiles */}
+      {/* Modal de Video: solo muestra el video vertical sin texto */}
+      <Dialog
+        open={showVideoPromo}
+        onOpenChange={(v) => (v ? setShowVideoPromo(true) : closeVideoPromo())}
+      >
+        <DialogContent
+          className="
+            z-[999] p-0 max-w-[min(400px,90vw)] overflow-hidden rounded-2xl border-0
+            [&>button]:hidden
+            data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:duration-500 data-[state=open]:ease-out
+            data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:duration-300
+          "
+        >
+          <div className="relative bg-black rounded-2xl overflow-hidden">
+            {/* Botón cerrar minimalista */}
+            <button
+              onClick={closeVideoPromo}
+              className="absolute top-3 right-3 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full
+                         bg-black/50 text-white/80 hover:bg-black/70 hover:text-white border border-white/20 backdrop-blur-sm transition-all duration-200
+                         focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              aria-label="Cerrar"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Video vertical sin controles adicionales */}
+            <div className="relative w-full" style={{ aspectRatio: "9/16" }}>
+              <video
+                src={rebozoVideo}
+                autoPlay
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+                aria-label="Video promocional de Rebozo"
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Eventos: diseño original con Calendar icon y texto */}
       <Dialog
         open={showEventsPromo}
-        onOpenChange={(v) => (v ? setShowEventsPromo(true) : closePromo())}
+        onOpenChange={(v) =>
+          v ? setShowEventsPromo(true) : closeEventsPromo()
+        }
       >
         <DialogContent
           className="
@@ -85,7 +152,7 @@ const Home = () => {
 
               {/* Botón cerrar minimalista */}
               <button
-                onClick={closePromo}
+                onClick={closeEventsPromo}
                 className="absolute top-4 right-4 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full
                            bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10 backdrop-blur-sm transition-all duration-200
                            focus:outline-none focus-visible:ring-2 focus-visible:ring-red-800/40"
@@ -130,7 +197,7 @@ const Home = () => {
                 {/* CTA elegante con acento rojo sutil */}
                 <Link
                   to="/events"
-                  onClick={closePromo}
+                  onClick={closeEventsPromo}
                   className="inline-flex items-center justify-center gap-3 px-10 py-4
                              bg-white text-zinc-950 font-medium tracking-wide rounded-full
                              hover:bg-red-50 hover:shadow-xl hover:scale-[1.02] transition-all duration-300

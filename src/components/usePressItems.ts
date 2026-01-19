@@ -51,7 +51,7 @@ const PLACEHOLDER =
     `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'>
       <rect width='100%' height='100%' fill='#1f2937'/>
       <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#9ca3af' font-family='system-ui, -apple-system, Segoe UI, Roboto' font-size='42'>Prensa</text>
-    </svg>`
+    </svg>`,
   );
 
 // ⚠️ Deja esta lista como tu “fuente de verdad” (datos mínimos inmediatos)
@@ -71,6 +71,15 @@ const pressItemsBase: PressItem[] = [
     description: "En busca de la naturaleza femenina",
     type: "article",
     image: elUniversalImg,
+  },
+  {
+    title: "REBOZO | Tráiler",
+    url: "https://www.youtube.com/watch?v=AHz-Shfcef8",
+    description:
+      "Espectáculo unipersonal de música, danza y teatro que aborda el proceso de elaboración del REBOZO, la prenda tradicional mexicana por excelencia, en una metáfora del tejido de la vida misma.",
+    type: "video",
+    videoId: "AHz-Shfcef8",
+    thumbnail: valeriaPortadaImg,
   },
   {
     title: "Entrevista con Valeria Vega Solórzano",
@@ -227,7 +236,7 @@ const fetchArticleData = async (url: string) => {
     }
 
     const proxied = `https://api.allorigins.win/get?url=${encodeURIComponent(
-      url
+      url,
     )}`;
     const resp = await withTimeout(proxied, FETCH_TIMEOUT_MS);
     const data = await resp.json();
@@ -239,13 +248,13 @@ const fetchArticleData = async (url: string) => {
     let resolvedImage =
       abs(
         doc.querySelector('meta[property="og:image"]')?.getAttribute("content"),
-        url
+        url,
       ) ||
       abs(
         doc
           .querySelector('meta[name="twitter:image"]')
           ?.getAttribute("content"),
-        url
+        url,
       ) ||
       abs(doc.querySelector(".article-image img")?.getAttribute("src"), url) ||
       abs(doc.querySelector("article img")?.getAttribute("src"), url);
@@ -297,7 +306,7 @@ const fetchArticleData = async (url: string) => {
         .filter(
           (t) =>
             t.length > 60 &&
-            !/©|Derechos reservados|Todos los derechos/i.test(t)
+            !/©|Derechos reservados|Todos los derechos/i.test(t),
         );
 
       if (!short && paragraphs.length > 0) {
@@ -421,7 +430,7 @@ export function usePressItems() {
         ...it,
         domain: getDomain(it.url),
       };
-    })
+    }),
   );
 
   const [isLoading, setIsLoading] = useState(true);
@@ -446,7 +455,7 @@ export function usePressItems() {
           return { ...base, ...cached };
         }
         return base;
-      })
+      }),
     );
 
     // encola TODO, pero los que están frescos se van a saltar en fetcher
@@ -487,7 +496,7 @@ export function usePressItems() {
 
           // actualiza sólo ese item en UI (incremental)
           setItems((prev) =>
-            prev.map((p) => (p.url === next.url ? { ...p, ...merged } : p))
+            prev.map((p) => (p.url === next.url ? { ...p, ...merged } : p)),
           );
         } else {
           // si no hubo data, al menos guarda timestamp para evitar reintento inmediato
@@ -498,7 +507,7 @@ export function usePressItems() {
       } else {
         // ya está fresco: asegura que la UI lo tenga
         setItems((prev) =>
-          prev.map((p) => (p.url === next.url ? { ...p, ...cached } : p))
+          prev.map((p) => (p.url === next.url ? { ...p, ...cached } : p)),
         );
       }
     } catch {
