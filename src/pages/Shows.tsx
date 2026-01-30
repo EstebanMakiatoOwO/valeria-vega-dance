@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { FileText, ExternalLink, Download, X } from "lucide-react";
 
-import lasOrquestasImg from "@/assets/varios/las-orquestas.jpeg";
+import lasOrquestasImg from "@/assets/varios/las_orquestas_new.jpeg";
 import detrasDeMiImg from "@/assets/shows/detras/detras-pose.jpeg";
 import rebozoImg from "@/assets/shows/rebozo/rebozo.jpg";
 import damaPuertoImg from "@/assets/shows/dama/dama-del-puerto.jpg";
