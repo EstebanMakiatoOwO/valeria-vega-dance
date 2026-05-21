@@ -11,8 +11,6 @@ const VIDEO_KEY = "io.videoPromo.seen.v1";
 
 const Home = () => {
   // Estado para ambos modales
-  const [showVideoPromo, setShowVideoPromo] = useState(false);
-  const [showEventsPromo, setShowEventsPromo] = useState(false);
   const { search } = useLocation();
 
   useEffect(() => {
@@ -21,43 +19,11 @@ const Home = () => {
 
     if (forceOpen) {
       sessionStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(VIDEO_KEY);
-      setShowEventsPromo(true);
       return;
     }
 
-    const videoSeen = sessionStorage.getItem(VIDEO_KEY) === "1";
-    const eventsSeen = sessionStorage.getItem(SESSION_KEY) === "1";
-
     // Si no se ha visto el video, mostrarlo primero
-    if (!videoSeen) {
-      const timer = setTimeout(() => setShowVideoPromo(true), 3000);
-      return () => clearTimeout(timer);
-    }
-
-    // Si ya se vio el video pero no los eventos, mostrar eventos
-    if (!eventsSeen) {
-      const timer = setTimeout(() => setShowEventsPromo(true), 5000);
-      return () => clearTimeout(timer);
-    }
   }, [search]);
-
-  function closeVideoPromo() {
-    setShowVideoPromo(false);
-    sessionStorage.setItem(VIDEO_KEY, "1");
-    // Después de cerrar el video, esperar un poco y mostrar eventos
-    setTimeout(() => {
-      const eventsSeen = sessionStorage.getItem(SESSION_KEY) === "1";
-      if (!eventsSeen) {
-        setShowEventsPromo(true);
-      }
-    }, 2000);
-  }
-
-  function closeEventsPromo() {
-    setShowEventsPromo(false);
-    sessionStorage.setItem(SESSION_KEY, "1");
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -85,10 +51,7 @@ const Home = () => {
       </div>
 
       {/* Modal de Video: solo muestra el video vertical sin texto */}
-      <Dialog
-        open={showVideoPromo}
-        onOpenChange={(v) => (v ? setShowVideoPromo(true) : closeVideoPromo())}
-      >
+      <Dialog>
         <DialogContent
           className="
             z-[999] p-0 max-w-[min(400px,90vw)] overflow-hidden rounded-2xl border-0
@@ -98,17 +61,6 @@ const Home = () => {
           "
         >
           <div className="relative bg-black rounded-2xl overflow-hidden">
-            {/* Botón cerrar minimalista */}
-            <button
-              onClick={closeVideoPromo}
-              className="absolute top-3 right-3 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full
-                         bg-black/50 text-white/80 hover:bg-black/70 hover:text-white border border-white/20 backdrop-blur-sm transition-all duration-200
-                         focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-              aria-label="Cerrar"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
             {/* Video vertical sin controles adicionales */}
             <div className="relative w-full" style={{ aspectRatio: "9/16" }}>
               <video
@@ -125,12 +77,7 @@ const Home = () => {
       </Dialog>
 
       {/* Modal de Eventos: diseño original con Calendar icon y texto */}
-      <Dialog
-        open={showEventsPromo}
-        onOpenChange={(v) =>
-          v ? setShowEventsPromo(true) : closeEventsPromo()
-        }
-      >
+      <Dialog>
         <DialogContent
           className="
             z-[999] p-0 max-w-[min(600px,92vw)] overflow-hidden rounded-2xl border-0
@@ -149,17 +96,6 @@ const Home = () => {
               <div className="pointer-events-none absolute inset-0 opacity-25">
                 <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-80 h-80 bg-gradient-to-r from-rose-700/12 via-purple-800/10 to-red-900/8 blur-3xl rounded-full" />
               </div>
-
-              {/* Botón cerrar minimalista */}
-              <button
-                onClick={closeEventsPromo}
-                className="absolute top-4 right-4 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full
-                           bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10 backdrop-blur-sm transition-all duration-200
-                           focus:outline-none focus-visible:ring-2 focus-visible:ring-red-800/40"
-                aria-label="Cerrar"
-              >
-                <X className="w-4 h-4" />
-              </button>
 
               {/* Contenido */}
               <div className="relative px-10 py-14 sm:px-12 sm:py-16 text-center space-y-8">
@@ -193,18 +129,6 @@ const Home = () => {
                   Descubre la cartelera y reserva tu lugar para las siguientes
                   funciones.
                 </p>
-
-                {/* CTA elegante con acento rojo sutil */}
-                <Link
-                  to="/events"
-                  onClick={closeEventsPromo}
-                  className="inline-flex items-center justify-center gap-3 px-10 py-4
-                             bg-white text-zinc-950 font-medium tracking-wide rounded-full
-                             hover:bg-red-50 hover:shadow-xl hover:scale-[1.02] transition-all duration-300
-                             focus:outline-none focus-visible:ring-2 focus-visible:ring-red-800/40 border border-zinc-200/20"
-                >
-                  <span className="text-[15px]">Ver Eventos</span>
-                </Link>
               </div>
             </div>
           </div>
