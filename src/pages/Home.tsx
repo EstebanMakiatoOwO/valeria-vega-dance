@@ -4,10 +4,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Calendar, X } from "lucide-react";
 import valeriaDancer from "@/assets/fotos/valeria-portada.jpg";
 import logo from "@/assets/logo.png";
-import rebozoVideo from "@/assets/videos/rebozo.mp4";
 
 const SESSION_KEY = "io.eventsPromo.seen.v3";
-const VIDEO_KEY = "io.videoPromo.seen.v1";
 
 const Home = () => {
   // Estado para ambos modales

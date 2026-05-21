@@ -13,6 +13,7 @@ type EventItem = {
   month: string;
   year: string;
   title: string;
+  subtitle?: string; // ★ subtítulo opcional bajo el título
   location: string;
   address: string; // dirección fija siempre
   gradient: string;
@@ -194,6 +195,11 @@ const Events = () => {
                   <h3 className="font-serif tracking-tight text-2xl md:text-3xl font-normal text-white leading-tight">
                     {event.title}
                   </h3>
+                  {event.subtitle && (
+                    <p className="font-sans text-sm text-white/60 italic mt-1">
+                      {event.subtitle}
+                    </p>
+                  )}
 
                   <div className="space-y-2">
                     {/* Dirección fija */}
@@ -301,9 +307,14 @@ const Events = () => {
                     <div
                       className={`w-16 h-1 bg-gradient-to-r ${currentEvent.gradient} rounded-full mb-4`}
                     />
-                    <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-white mb-2 leading-tight">
+                    <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-white mb-1 leading-tight">
                       {currentEvent.title}
                     </h2>
+                    {currentEvent.subtitle && (
+                      <p className="font-sans text-base text-white/60 italic mb-2">
+                        {currentEvent.subtitle}
+                      </p>
+                    )}
                     <p className="text-sm text-white/60">
                       {formatDateDisplay(currentEvent)}
                     </p>
